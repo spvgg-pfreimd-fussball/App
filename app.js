@@ -38,7 +38,7 @@ const own = (t, name) => name === OWN[t];
 const RES = { win: "S", draw: "U", defeat: "N" };
 function onImgError(img) { img.removeAttribute("src"); img.hidden = true; }
 window.__imgErr = onImgError;
-/* Bilder werden erst eingeblendet, wenn sie geladen sind (bleiben dabei im Layout, damit "lazy" lädt) */
+/* Bilder werden erst eingeblendet, wenn sie geladen sind (sie laden sofort, nicht erst beim Scrollen) */
 window.__imgOk = img => { img.removeAttribute("data-wait"); };
 
 /* ---------- Live-Daten von FuPa und aus dem Vereinsshop ----------
@@ -110,7 +110,7 @@ function viewNews() {
     </section>
     <section class="sec"><h2 class="h">Neuigkeiten</h2><div class="news">
       ${S.news.map((n, i) => `<button class="card nc" data-news="${i}">
-        <img class="img" src="${abs(n.img)}" alt="" loading="lazy" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">
+        <img class="img" src="${abs(n.img)}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">
         <div class="tx"><span class="date">${esc(n.d)}</span><h3>${esc(n.t)}</h3><p>${esc(n.p[0])}</p></div></button>`).join("")}
     </div></section>`;
 }
@@ -143,7 +143,7 @@ function viewTeams() {
     const staff = tm.staff.length ? `<dl class="staff">${tm.staff.map(s => `<dt>${esc(s[0])}</dt><dd>${esc(s[1])}</dd>`).join("")}</dl>` : "";
     const label = tm.id === "ah" ? "AH" : tm.id.slice(1) + ".";
     return `<article class="card team">
-      <div class="ph"><span>${label}</span><img src="${abs(tm.img)}" alt="Mannschaftsfoto ${esc(tm.name)}" loading="lazy" data-wait onload="__imgOk(this)" onerror="__imgErr(this)"></div>
+      <div class="ph"><span>${label}</span><img src="${abs(tm.img)}" alt="Mannschaftsfoto ${esc(tm.name)}" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)"></div>
       <div class="bd"><div><h3>${esc(tm.name)}</h3><div class="muted" style="font-size:14.5px">${esc(f?.liga || tm.liga)}</div></div>
         ${stats}${staff}
         ${f ? `<div><button class="btn" data-go-team="${tm.id}">Spielplan & Tabelle</button></div>` : ""}
@@ -157,7 +157,7 @@ function viewShop() {
   return `<div class="note">Stöbern in der App, bestellen und bezahlen im Vereinsshop. Ein Tipp auf einen Artikel öffnet ihn dort.</div>
     <div class="chips" role="group" aria-label="Kategorie">${cats.map(c => `<button class="chip" data-cat="${c}" aria-pressed="${c === state.cat}">${c}</button>`).join("")}</div>
     <div class="grid">${items.map(p => `<a class="card prod" href="${abs(p[4])}" target="_blank" rel="noopener">
-      <div class="pi"><img class="ph" src="${WAPPEN}" alt=""><img class="real" src="${abs(p[5])}" alt="${esc(p[0])}" loading="lazy" data-wait onload="__imgOk(this)" onerror="__imgErr(this)"></div>
+      <div class="pi"><img class="ph" src="${WAPPEN}" alt=""><img class="real" src="${abs(p[5])}" alt="${esc(p[0])}" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)"></div>
       <div class="pb"><b>${esc(p[0])}</b>${p[3] ? `<span class="var">${esc(p[3])}</span>` : ""}<span class="pr tabnum">${p[6] ? "ab " : ""}${euro(p[2])}</span></div></a>`).join("")}</div>`;
 }
 
@@ -180,7 +180,7 @@ function viewMehr() {
       ${L("Jugendfußball", "https://jugendfussball.spvgg-pfreimd.de/", "Homepage der Jugend")}
     </div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.2</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.3</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
