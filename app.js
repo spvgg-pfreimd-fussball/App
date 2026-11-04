@@ -90,7 +90,7 @@ function viewNews() {
   const n1 = nextMatch("m1");
   const hero = n1 ? `<section class="next" aria-label="Nächstes Spiel">
       <div class="lbl"><span>Nächstes Spiel</span><span>${own("m1", n1.home) ? "Heim" : "Auswärts"}</span></div>
-      <div class="vs"><div class="tm">${esc(n1.home)}</div><div class="mid tabnum">${fTime(n1.d)}<small>UHR</small></div><div class="tm">${esc(n1.away)}</div></div>
+      <div class="vs"><div class="tm">${esc(n1.home)}</div><div class="mid tabnum">${fTime(n1.d)}<small>Uhr</small></div><div class="tm">${esc(n1.away)}</div></div>
       <div class="when"><b>1. Mannschaft · ${fDay(n1.d)}</b><br>${esc(state.fupa.m1.liga)}${inDays(n1.d) ? `<span class="pill">${inDays(n1.d)}</span>` : ""}</div>
     </section>` : "";
   const minis = ["m2", "m3"].map(t => { const n = nextMatch(t); if (!n) return ""; const opp = own(t, n.home) ? n.away : n.home;
@@ -179,7 +179,7 @@ function viewMehr() {
       ${L("Jugendfußball", "https://jugendfussball.spvgg-pfreimd.de/", "Homepage der Jugend")}
     </div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Prototyp 0.1</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.1</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
