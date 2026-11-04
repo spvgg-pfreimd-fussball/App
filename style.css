@@ -8,6 +8,8 @@ html,body{margin:0}
 :root{padding-top:env(safe-area-inset-top,0px)}
 img{max-width:100%}
 [hidden]{display:none!important}
+img{transition:opacity .3s ease}
+img[data-wait]{opacity:0}
 
 /* Layout: App-Rahmen max. 560px, weiße Kopfleiste oben, Leiste unten, helle Karten dazwischen. */
 :root{
