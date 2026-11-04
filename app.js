@@ -69,7 +69,7 @@ async function loadLive() {
     }
     state.fupa = next; state.live = true;
     document.getElementById("src").textContent = "Live · FuPa";
-    render();
+    invalidate(); render();
   } catch (e) { /* kein Netz oder gesperrt: Datenstand bleibt */ }
 }
 
@@ -180,7 +180,7 @@ function viewMehr() {
       ${L("Jugendfußball", "https://jugendfussball.spvgg-pfreimd.de/", "Homepage der Jugend")}
     </div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.4</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.5</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -199,15 +199,17 @@ const SHEETS = {
 };
 let lastFocus = null;
 function openSheet(html) {
-  lastFocus = document.activeElement;
+  if (document.getElementById("sheet").hidden) lastFocus = document.activeElement;
   document.getElementById("sheet-body").innerHTML = html;
   const s = document.getElementById("sheet"); s.hidden = false; s.scrollTop = 0;
   document.body.style.overflow = "hidden";
   document.getElementById("back").focus();
 }
 function closeSheet() {
-  document.getElementById("sheet").hidden = true; document.body.style.overflow = "";
-  lastFocus?.focus?.();
+  const s = document.getElementById("sheet");
+  if (s.hidden) return;
+  s.hidden = true; document.body.style.overflow = "";
+  lastFocus?.focus?.({ preventScroll: true });
 }
 function openNews(i) {
   const n = S.news[i];
@@ -216,25 +218,92 @@ function openNews(i) {
     ${n.p.map(p => `<p>${esc(p)}</p>`).join("")}`);
 }
 
-/* ---------- Steuerung ---------- */
+/* ---------- Navigation ----------
+   Jeder Schritt ist ein eigener Eintrag im Verlauf des Handys:
+     #mehr          → Bereich „Mehr“
+     #mehr/sparte   → Detailseite „Spartenbesetzung“
+     #news/2        → News-Artikel Nr. 2 (gezählt ab 0)
+   Dadurch geht „Zurück“ am Handy immer genau einen Schritt zurück.
+   Jeder Bereich bleibt im Hintergrund erhalten, samt Scroll-Position. */
 const VIEWS = { news: viewNews, spiele: viewSpiele, teams: viewTeams, shop: viewShop, mehr: viewMehr };
-const current = () => { const h = location.hash.slice(1); return VIEWS[h] ? h : "news"; };
-function render() {
-  const v = current(); const el = document.getElementById("view");
-  el.innerHTML = VIEWS[v]();
-  document.querySelectorAll(".tabs a").forEach(a => { if (a.dataset.tab === v) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+const route = () => {
+  const [v, d] = location.hash.slice(1).split("/");
+  return { view: VIEWS[v] ? v : "news", detail: d ? decodeURIComponent(d) : null };
+};
+const current = () => route().view;
+const panes = {};          // je Bereich ein eigener Container
+const scrollPos = {};      // gemerkte Scroll-Position je Bereich
+let shownView = null;      // gerade sichtbarer Bereich
+let freshNav = false;      // true = neuer Schritt per Tipp (dann oben beginnen)
+let steps = 0;             // Schritte innerhalb der App (für den Zurück-Knopf)
+
+function paneFor(v) {
+  if (!panes[v]) {
+    const el = document.createElement("div");
+    el.className = "pane"; el.dataset.v = v;
+    document.getElementById("view").append(el);
+    panes[v] = { el, dirty: true };
+  }
+  return panes[v];
 }
-window.addEventListener("hashchange", () => { closeSheet(); render(); window.scrollTo(0, 0); });
+function showPane(v) {
+  for (const k in panes) panes[k].el.hidden = k !== v;
+  document.querySelectorAll(".tabs a").forEach(a => { if (a.dataset.tab === v) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  shownView = v;
+}
+/* Aktuellen Bereich neu zeichnen (z. B. nach Umschalten oder neuen Daten) */
+function render() {
+  const v = current(), p = paneFor(v);
+  p.el.innerHTML = VIEWS[v](); p.dirty = false;
+  showPane(v);
+}
+/* Alle Bereiche beim nächsten Anzeigen neu zeichnen (neue Daten) */
+function invalidate() { for (const k in panes) panes[k].dirty = true; }
+
+function applyRoute() {
+  const { view, detail } = route();
+  if (view !== shownView) {
+    const p = paneFor(view);
+    if (p.dirty) { p.el.innerHTML = VIEWS[view](); p.dirty = false; }
+    showPane(view);
+    window.scrollTo(0, freshNav ? 0 : (scrollPos[view] || 0));
+  }
+  freshNav = false;
+  if (detail !== null && view === "news" && S.news[+detail]) openNews(+detail);
+  else if (detail !== null && SHEETS[detail]) openSheet(SHEETS[detail]());
+  else closeSheet();
+}
+const go = hash => { freshNav = true; location.hash = hash; };
+function goBack() {
+  if (steps > 0) history.back();
+  else location.replace("#" + current());   // direkt per Link geöffnet: zum Bereich, ohne die App zu verlassen
+}
+
+window.addEventListener("hashchange", () => { steps++; applyRoute(); });
+window.addEventListener("scroll", () => {
+  if (shownView && document.getElementById("sheet").hidden) scrollPos[shownView] = window.scrollY;
+}, { passive: true });
+
 document.addEventListener("click", e => {
+  const link = e.target.closest('a[href^="#"]');
+  if (link) {
+    freshNav = true;
+    if (link.getAttribute("href") === "#" + current() && !route().detail) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    return;
+  }
   const b = e.target.closest("[data-team],[data-mode],[data-cat],[data-news],[data-sheet],[data-go-team],[data-copy]");
   if (!b) return;
   const d = b.dataset;
   if (d.team) { state.team = d.team; render(); }
   else if (d.mode) { state.spMode = d.mode; render(); }
   else if (d.cat) { state.cat = d.cat; render(); }
-  else if (d.news) openNews(+d.news);
-  else if (d.sheet) openSheet(SHEETS[d.sheet]());
-  else if (d.goTeam) { state.team = d.goTeam; state.spMode = "spiele"; if (current() === "spiele") render(); else location.hash = "spiele"; }
+  else if (d.news) go("news/" + d.news);
+  else if (d.sheet) go(current() + "/" + d.sheet);
+  else if (d.goTeam) {
+    state.team = d.goTeam; state.spMode = "spiele";
+    if (panes.spiele) panes.spiele.dirty = true;
+    if (current() === "spiele") render(); else go("spiele");
+  }
   else if (d.copy) {
     const txt = document.getElementById(d.copy).textContent;
     const done = () => { b.textContent = "Kopiert"; setTimeout(() => b.textContent = "Kopieren", 1600); };
@@ -242,8 +311,8 @@ document.addEventListener("click", e => {
   }
 });
 function selectText(id) { const r = document.createRange(); r.selectNodeContents(document.getElementById(id)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
-document.getElementById("back").addEventListener("click", closeSheet);
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !document.getElementById("sheet").hidden) closeSheet(); });
+document.getElementById("back").addEventListener("click", goBack);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !document.getElementById("sheet").hidden) goBack(); });
 
 /* ---------- Shop live aus WooCommerce ---------- */
 function variantText(attrs) {
@@ -268,6 +337,7 @@ async function loadShop() {
       return [dec(p.name), p.categories[0]?.name || "Sportausrüstung", (range ? +range.min_amount : +p.prices.price) / div,
         variantText(p.attributes), p.permalink, p.images?.[0]?.src || "", range && range.min_amount !== range.max_amount ? 1 : 0];
     });
+    if (panes.shop) panes.shop.dirty = true;
     if (current() === "shop") render();
   } catch (e) { /* Datenstand aus inhalte.json bleibt */ }
 }
@@ -284,7 +354,7 @@ async function start() {
   state.products = S.products;
   const [, m, d] = S.stand.split("-");
   document.getElementById("src").textContent = `Stand ${d}.${m}.`;
-  render();
+  applyRoute();
   loadLive();
   loadShop();
 }
