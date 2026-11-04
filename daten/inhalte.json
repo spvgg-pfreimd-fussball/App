@@ -1,0 +1,1833 @@
+{
+  "stand": "2026-11-04",
+  "fupa": {
+    "m1": {
+      "liga": "Bezirksliga Oberpfalz Nord",
+      "tab": [
+        [
+          1,
+          "SpVgg Weiden",
+          17,
+          12,
+          3,
+          2,
+          "48:21",
+          27,
+          39,
+          "up1",
+          0
+        ],
+        [
+          2,
+          "Etzenricht",
+          17,
+          10,
+          3,
+          4,
+          "33:16",
+          17,
+          33,
+          "up2",
+          0
+        ],
+        [
+          3,
+          "SV Raigering",
+          17,
+          9,
+          5,
+          3,
+          "34:17",
+          17,
+          32,
+          "",
+          0
+        ],
+        [
+          4,
+          "Schwarzhofen",
+          16,
+          9,
+          4,
+          3,
+          "39:20",
+          19,
+          31,
+          "",
+          0
+        ],
+        [
+          5,
+          "SF Upo",
+          17,
+          8,
+          5,
+          4,
+          "39:28",
+          11,
+          29,
+          "",
+          0
+        ],
+        [
+          6,
+          "Pfreimd",
+          17,
+          7,
+          3,
+          7,
+          "32:25",
+          7,
+          24,
+          "",
+          1
+        ],
+        [
+          7,
+          "FC Schlicht",
+          17,
+          7,
+          3,
+          7,
+          "33:29",
+          4,
+          24,
+          "",
+          0
+        ],
+        [
+          8,
+          "FC Wernberg",
+          17,
+          7,
+          3,
+          7,
+          "43:35",
+          8,
+          24,
+          "",
+          0
+        ],
+        [
+          9,
+          "SV Hahnbach",
+          17,
+          5,
+          6,
+          6,
+          "24:27",
+          -3,
+          21,
+          "",
+          0
+        ],
+        [
+          10,
+          "Tännesberg",
+          16,
+          6,
+          3,
+          7,
+          "27:31",
+          -4,
+          21,
+          "",
+          0
+        ],
+        [
+          11,
+          "Vohenstrauß",
+          17,
+          6,
+          2,
+          9,
+          "25:34",
+          -9,
+          20,
+          "",
+          0
+        ],
+        [
+          12,
+          "SV 08 Auerbach",
+          17,
+          5,
+          4,
+          8,
+          "32:46",
+          -14,
+          19,
+          "",
+          0
+        ],
+        [
+          13,
+          "TV Nabburg",
+          17,
+          5,
+          3,
+          9,
+          "30:50",
+          -20,
+          18,
+          "down1",
+          0
+        ],
+        [
+          14,
+          "Weiden-Ost",
+          17,
+          4,
+          4,
+          9,
+          "36:45",
+          -9,
+          16,
+          "down1",
+          0
+        ],
+        [
+          15,
+          "1. FC Schwarzenfeld",
+          17,
+          4,
+          3,
+          10,
+          "24:37",
+          -13,
+          15,
+          "down1",
+          0
+        ],
+        [
+          16,
+          "Inter Amberg",
+          17,
+          3,
+          2,
+          12,
+          "24:62",
+          -38,
+          11,
+          "down2",
+          0
+        ]
+      ],
+      "sp": [
+        [
+          "2026-07-19T15:00",
+          "Pfreimd",
+          "SV 08 Auerbach",
+          5,
+          0,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-07-24T18:30",
+          "SV Hahnbach",
+          "Pfreimd",
+          1,
+          1,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-08-02T15:00",
+          "Pfreimd",
+          "Etzenricht",
+          0,
+          2,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-08-09T15:15",
+          "FC Wernberg",
+          "Pfreimd",
+          1,
+          2,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-08-14T18:30",
+          "Pfreimd",
+          "Tännesberg",
+          1,
+          3,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-08-16T15:30",
+          "Vohenstrauß",
+          "Pfreimd",
+          3,
+          0,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-08-23T15:00",
+          "Pfreimd",
+          "Weiden-Ost",
+          2,
+          0,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-08-30T14:00",
+          "SpVgg Weiden",
+          "Pfreimd",
+          3,
+          0,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-09-05T16:00",
+          "Schwarzhofen",
+          "Pfreimd",
+          3,
+          0,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-09-13T15:00",
+          "Pfreimd",
+          "1. FC Schwarzenfeld",
+          4,
+          0,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-09-19T16:00",
+          "Inter Amberg",
+          "Pfreimd",
+          2,
+          1,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-09-26T14:00",
+          "Pfreimd",
+          "FC Schlicht",
+          3,
+          0,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-10-03T15:15",
+          "SF Upo",
+          "Pfreimd",
+          2,
+          2,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-10-10T14:30",
+          "Pfreimd",
+          "SV Raigering",
+          1,
+          4,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-10-17T16:00",
+          "TV Nabburg",
+          "Pfreimd",
+          0,
+          6,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-10-25T14:00",
+          "SV 08 Auerbach",
+          "Pfreimd",
+          1,
+          1,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-10-31T15:00",
+          "Pfreimd",
+          "SV Hahnbach",
+          3,
+          0,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-11-07T14:00",
+          "Etzenricht",
+          "Pfreimd",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2026-11-15T14:00",
+          "Pfreimd",
+          "FC Wernberg",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-03-14T14:15",
+          "Tännesberg",
+          "Pfreimd",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-03-21T14:00",
+          "Pfreimd",
+          "Vohenstrauß",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-03-29T16:00",
+          "Weiden-Ost",
+          "Pfreimd",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-04T15:00",
+          "Pfreimd",
+          "SpVgg Weiden",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-11T15:00",
+          "Pfreimd",
+          "Schwarzhofen",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-17T16:00",
+          "1. FC Schwarzenfeld",
+          "Pfreimd",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-25T15:00",
+          "Pfreimd",
+          "Inter Amberg",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-02T15:00",
+          "FC Schlicht",
+          "Pfreimd",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-09T15:00",
+          "Pfreimd",
+          "SF Upo",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-15T16:00",
+          "SV Raigering",
+          "Pfreimd",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-22T14:00",
+          "Pfreimd",
+          "TV Nabburg",
+          null,
+          null,
+          "PRE",
+          ""
+        ]
+      ]
+    },
+    "m2": {
+      "liga": "Kreisklasse Nord",
+      "tab": [
+        [
+          1,
+          "1. FC Rötz",
+          16,
+          12,
+          2,
+          2,
+          "53:25",
+          28,
+          38,
+          "up1",
+          0
+        ],
+        [
+          2,
+          "Neunburg v.W",
+          16,
+          11,
+          3,
+          2,
+          "49:17",
+          32,
+          36,
+          "up2",
+          0
+        ],
+        [
+          3,
+          "TSV Dieterskirchen",
+          16,
+          11,
+          2,
+          3,
+          "41:12",
+          29,
+          35,
+          "",
+          0
+        ],
+        [
+          4,
+          "Pfreimd II",
+          16,
+          8,
+          5,
+          3,
+          "34:24",
+          10,
+          29,
+          "",
+          1
+        ],
+        [
+          5,
+          "SV Altendorf",
+          15,
+          7,
+          6,
+          2,
+          "38:26",
+          12,
+          27,
+          "",
+          0
+        ],
+        [
+          6,
+          "Weinberg SAD",
+          16,
+          8,
+          1,
+          7,
+          "40:35",
+          5,
+          25,
+          "",
+          0
+        ],
+        [
+          7,
+          "Schönseer L",
+          16,
+          7,
+          4,
+          5,
+          "30:34",
+          -4,
+          25,
+          "",
+          0
+        ],
+        [
+          8,
+          "SG Niederm",
+          14,
+          6,
+          2,
+          6,
+          "34:39",
+          -5,
+          20,
+          "",
+          0
+        ],
+        [
+          9,
+          "Pullenried",
+          15,
+          5,
+          4,
+          6,
+          "24:24",
+          0,
+          19,
+          "",
+          0
+        ],
+        [
+          10,
+          "SC Kreith",
+          16,
+          5,
+          4,
+          7,
+          "26:32",
+          -6,
+          19,
+          "",
+          0
+        ],
+        [
+          11,
+          "SC Altfalter",
+          15,
+          4,
+          0,
+          11,
+          "20:41",
+          -21,
+          12,
+          "",
+          0
+        ],
+        [
+          12,
+          "SG DJK Weihern",
+          16,
+          3,
+          1,
+          12,
+          "22:44",
+          -22,
+          10,
+          "",
+          0
+        ],
+        [
+          13,
+          "Schwarzhofen II",
+          15,
+          2,
+          2,
+          11,
+          "16:39",
+          -23,
+          8,
+          "down1",
+          0
+        ],
+        [
+          14,
+          "Tännesberg II",
+          16,
+          2,
+          0,
+          14,
+          "19:54",
+          -35,
+          6,
+          "down2",
+          0
+        ]
+      ],
+      "sp": [
+        [
+          "2026-07-17T19:00",
+          "SG DJK Weihern",
+          "Pfreimd II",
+          1,
+          3,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-07-26T15:00",
+          "Pfreimd II",
+          "Weinberg SAD",
+          3,
+          1,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-08-01T15:00",
+          "SV Altendorf",
+          "Pfreimd II",
+          0,
+          0,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-08-09T18:00",
+          "Pfreimd II",
+          "SC Altfalter",
+          2,
+          1,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-08-16T15:15",
+          "SC Kreith",
+          "Pfreimd II",
+          2,
+          0,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-08-23T13:00",
+          "Pfreimd II",
+          "Schönseer L",
+          2,
+          2,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-08-29T16:00",
+          "Tännesberg II",
+          "Pfreimd II",
+          1,
+          2,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-09-06T17:00",
+          "Pfreimd II",
+          "SG Niederm",
+          4,
+          1,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-09-13T15:15",
+          "Pullenried",
+          "Pfreimd II",
+          1,
+          3,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-09-20T15:00",
+          "Pfreimd II",
+          "Neunburg v.W",
+          3,
+          2,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-09-26T12:00",
+          "Pfreimd II",
+          "1. FC Rötz",
+          1,
+          1,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-10-04T15:15",
+          "TSV Dieterskirchen",
+          "Pfreimd II",
+          3,
+          1,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-10-11T15:00",
+          "Pfreimd II",
+          "Schwarzhofen II",
+          4,
+          1,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-10-18T15:00",
+          "Pfreimd II",
+          "SG DJK Weihern",
+          1,
+          1,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-10-25T14:15",
+          "Weinberg SAD",
+          "Pfreimd II",
+          2,
+          2,
+          "POST",
+          "draw"
+        ],
+        [
+          "2026-10-31T13:00",
+          "Pfreimd II",
+          "SV Altendorf",
+          3,
+          4,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-11-07T16:00",
+          "SC Altfalter",
+          "Pfreimd II",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-03-20T15:30",
+          "Pfreimd II",
+          "SC Kreith",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-03-27T15:30",
+          "Schönseer L",
+          "Pfreimd II",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-04T13:00",
+          "Pfreimd II",
+          "Tännesberg II",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-11T15:15",
+          "SG Niederm",
+          "Pfreimd II",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-18T15:00",
+          "Pfreimd II",
+          "Pullenried",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-25T15:15",
+          "Neunburg v.W",
+          "Pfreimd II",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-02T15:30",
+          "1. FC Rötz",
+          "Pfreimd II",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-09T13:00",
+          "Pfreimd II",
+          "TSV Dieterskirchen",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-15T15:30",
+          "Schwarzhofen II",
+          "Pfreimd II",
+          null,
+          null,
+          "PRE",
+          ""
+        ]
+      ]
+    },
+    "m3": {
+      "liga": "A-Klasse Süd",
+      "tab": [
+        [
+          1,
+          "Weidenthal",
+          10,
+          9,
+          1,
+          0,
+          "59:7",
+          52,
+          28,
+          "up1",
+          0
+        ],
+        [
+          2,
+          "Wackersdorf",
+          11,
+          7,
+          2,
+          2,
+          "30:11",
+          19,
+          23,
+          "up2",
+          0
+        ],
+        [
+          3,
+          "ASV Fronberg",
+          11,
+          6,
+          2,
+          3,
+          "43:14",
+          29,
+          20,
+          "",
+          0
+        ],
+        [
+          4,
+          "FTE Schwand.",
+          10,
+          5,
+          3,
+          2,
+          "24:20",
+          4,
+          18,
+          "",
+          0
+        ],
+        [
+          5,
+          "SG Gleiritsch",
+          10,
+          4,
+          3,
+          3,
+          "25:30",
+          -5,
+          15,
+          "",
+          0
+        ],
+        [
+          6,
+          "SG Fischbach",
+          11,
+          4,
+          1,
+          6,
+          "23:51",
+          -28,
+          13,
+          "",
+          0
+        ],
+        [
+          7,
+          "TSV Winklarn",
+          9,
+          4,
+          0,
+          5,
+          "20:21",
+          -1,
+          12,
+          "",
+          0
+        ],
+        [
+          8,
+          "SC Teublitz",
+          11,
+          3,
+          2,
+          6,
+          "18:31",
+          -13,
+          11,
+          "",
+          0
+        ],
+        [
+          9,
+          "Pfreimd III",
+          11,
+          1,
+          0,
+          10,
+          "13:45",
+          -32,
+          3,
+          "down1",
+          1
+        ],
+        [
+          10,
+          "FC Vatanspor",
+          8,
+          1,
+          0,
+          7,
+          "7:32",
+          -25,
+          3,
+          "down2",
+          0
+        ]
+      ],
+      "sp": [
+        [
+          "2026-07-16T19:00",
+          "Pfreimd III",
+          "FTE Schwand.",
+          2,
+          4,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-07-26T15:00",
+          "FC Vatanspor",
+          "Pfreimd III",
+          2,
+          1,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-08-08T16:00",
+          "Pfreimd III",
+          "ASV Fronberg",
+          0,
+          5,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-08-30T15:15",
+          "Wackersdorf",
+          "Pfreimd III",
+          4,
+          0,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-09-06T15:00",
+          "Pfreimd III",
+          "TSV Winklarn",
+          2,
+          5,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-09-13T15:00",
+          "SG Fischbach",
+          "Pfreimd III",
+          4,
+          2,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-09-20T13:00",
+          "Pfreimd III",
+          "SC Teublitz",
+          1,
+          2,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-10-04T15:00",
+          "SG Gleiritsch",
+          "Pfreimd III",
+          5,
+          1,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-10-11T13:00",
+          "Pfreimd III",
+          "Weidenthal",
+          1,
+          9,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-10-18T13:00",
+          "Pfreimd III",
+          "FC Vatanspor",
+          3,
+          1,
+          "POST",
+          "win"
+        ],
+        [
+          "2026-10-25T15:30",
+          "FTE Schwand.",
+          "Pfreimd III",
+          4,
+          0,
+          "POST",
+          "defeat"
+        ],
+        [
+          "2026-11-08T14:30",
+          "ASV Fronberg",
+          "Pfreimd III",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-03T15:30",
+          "Pfreimd III",
+          "Wackersdorf",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-11T16:00",
+          "TSV Winklarn",
+          "Pfreimd III",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-18T13:00",
+          "Pfreimd III",
+          "SG Fischbach",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-04-24T16:15",
+          "SC Teublitz",
+          "Pfreimd III",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-08T15:30",
+          "Pfreimd III",
+          "SG Gleiritsch",
+          null,
+          null,
+          "PRE",
+          ""
+        ],
+        [
+          "2027-05-15T15:30",
+          "Weidenthal",
+          "Pfreimd III",
+          null,
+          null,
+          "PRE",
+          ""
+        ]
+      ]
+    }
+  },
+  "teams": [
+    {
+      "id": "m1",
+      "name": "1. Mannschaft",
+      "liga": "Bezirksliga Oberpfalz Nord",
+      "img": "/wp-content/uploads/2026/07/1_Mannschaft_16_9_2026_2027_1-1024x576.png",
+      "staff": [
+        [
+          "Trainer",
+          "Michael Hartlich"
+        ],
+        [
+          "Co-Trainer",
+          "Dennis Lobinger"
+        ],
+        [
+          "Betreuer",
+          "Max Strehl"
+        ]
+      ]
+    },
+    {
+      "id": "m2",
+      "name": "2. Mannschaft",
+      "liga": "Kreisklasse Nord",
+      "img": "/wp-content/uploads/2026/08/2_Mannschaft_16_9_2026_2027_1-1024x576.png",
+      "staff": [
+        [
+          "Trainer",
+          "Hannes Wurmstein"
+        ],
+        [
+          "Co-Trainer",
+          "Fabian Strehl"
+        ],
+        [
+          "Betreuer",
+          "Konrad Prax"
+        ]
+      ]
+    },
+    {
+      "id": "m3",
+      "name": "3. Mannschaft",
+      "liga": "A-Klasse Süd",
+      "img": "/wp-content/uploads/2026/07/3_Mannschaft_16_9_2026_2027_1-1024x576.png",
+      "staff": [
+        [
+          "Trainer",
+          "Alexander Piehler"
+        ],
+        [
+          "Trainer",
+          "Julian Blöth"
+        ]
+      ]
+    },
+    {
+      "id": "ah",
+      "name": "Alte Herren",
+      "liga": "Freundschaftsspiele, kein Ligabetrieb",
+      "img": "/wp-content/uploads/2023/10/Alte_Herren-1-1024x568.png",
+      "staff": []
+    }
+  ],
+  "events": [
+    {
+      "d": "2026-10-25",
+      "t": "Herbstmarkt"
+    },
+    {
+      "d": "2026-10-31",
+      "t": "Halloweenparty"
+    },
+    {
+      "d": "2026-11-28",
+      "t": "Adventsmarkt Aftershowparty"
+    },
+    {
+      "d": "2026-12-27",
+      "t": "Christbaumversteigerung"
+    }
+  ],
+  "news": [
+    {
+      "d": "05. September 2026",
+      "t": "Sponsoring Pfreimdtal Glubberer",
+      "img": "/wp-content/uploads/2026/10/Pfreimdtal_Glubberer.png",
+      "p": [
+        "Wir dürfen einen weiteren Unterstützer der SpVgg Pfreimd begrüßen. Diesmal etwas anderer Natur, nämlich in Form des in Pfreimd gegründeten Vereins der Pfreimdtal Glubberer. Die Jungs werden zukünftig in der Gaststätte auch das ein oder andere Spiel des 1. FC Nürnberg übertragen.",
+        "Vielen Dank an Vorstand Tobi Taubmann und seine Truppe für die Zusammenarbeit."
+      ]
+    },
+    {
+      "d": "30. Juli 2026",
+      "t": "Spendenübergabe Notfalltaschen",
+      "img": "/wp-content/uploads/2026/08/Spende_Notfalltaschen.jpg",
+      "p": [
+        "Bei sportlichen Veranstaltungen kommt es glücklicherweise nur extrem selten zu lebensbedrohlichen Notfällen. Um für solche Situationen künftig besser gerüstet zu sein, erhielt die Fußballabteilung der SpVgg Pfreimd von der Firma Hofmann IT-Systeme zwei Notfalltaschen. Besonders hervorzuheben ist das enthaltene CARDIO First Angel CPR-Feedback-System, das insbesondere Laien dabei unterstützt, im Falle eines Herzstillstands schnell und unkompliziert lebensrettende Erste-Hilfe-Maßnahmen einzuleiten. Darüber hinaus sind die Taschen unter anderem mit einem Beatmungsbeutel sowie weiteren Materialien zur Erstversorgung ausgestattet.",
+        "Um den sicheren Umgang mit der Notfallausrüstung zu vermitteln, wird im Herbst ein Erste-Hilfe-Kurs im Sportheim angeboten. Ziel ist es, den Vereinsverantwortlichen, Trainern der Mannschaften (Jugend, Herren und AH) und allen weiteren Interessierten die Möglichkeit zu geben, ihren Erste-Hilfe-Kurs aufzufrischen und auch den Umgang mit den Inhalten der Notfalltaschen näherzubringen. Die Qualifizierung der Verantwortlichen im aktiven und organisatorischen Bereich ist zudem ein wichtiger Bestandteil des Jugend- und Vereinskonzepts, welches die Abteilung Fußball in Kürze vorstellen wird.",
+        "Die SpVgg Pfreimd, Abteilung Fußball, bedankt sich bei Uli Hofmann von Hofmann IT-Systeme für die Bereitstellung der zwei Notfalltaschen."
+      ]
+    },
+    {
+      "d": "26. Juli 2026",
+      "t": "Spielerverabschiedung",
+      "img": "/wp-content/uploads/2026/08/Spielerverabschiedung.jpg",
+      "p": [
+        "In der Vorbereitung gab es noch drei Wechsel zu vermelden. Beim ersten Heimspiel unserer Zweiten nutzte man die Gelegenheit, um alle zu verabschieden. Michael Prey als sportlicher Leiter verabschiedete die drei Spieler vor Spielbeginn vor allen Spielern und Zuschauern per Stadiondurchsage und es gab viel Applaus. Als Abschiedsgeschenk bekommt jeder noch ein Andenken in Form eines Pfreimd-Trikots.",
+        "Philipp Schön: 160 Spiele, 7 Tore. Lukas Sebald: 136 Spiele, 28 Tore. Patrick Steinbacher: 49 Spiele, 1 Tor.",
+        "Wir wünschen allen eine verletzungsfreie und erfolgreiche Zukunft bei ihren neuen Vereinen!"
+      ]
+    },
+    {
+      "d": "20. Juni 2026",
+      "t": "Trainingsauftakt der Herren",
+      "img": "/wp-content/uploads/2026/07/Trainingsauftakt_2026.jpg",
+      "p": [
+        "Donnerstag letzter Woche erfolgte auch der Trainingsauftakt unserer drei Herrenmannschaften. Knapp 40 Jungs wurden durch die neuen und alten Trainer der drei Mannschaften am B-Platz begrüßt. Auch unsere Neuzugänge mit Bastian Schreier, Julian Kiener und unseren neu aus der A-Jugend kommenden Spielern waren mit am Start.",
+        "Am Samstag erfolgte dann die zweite Trainingseinheit mit anschließendem Mannschaftsessen und einer längeren Ansprache unseres Cheftrainers Mike Hartlich. Anschließend gab es dann noch frisch gegrillte Gockerl mit Kartoffelsalat und man konnte sich im „Pool“ auf das am Abend stattfindende WM-Spiel vorbereiten.",
+        "Kurzfristig wurde Sonntag für die BZL-Mannschaft noch ein Testspiel gegen den TB Roding angesetzt. Dies haben wir 3:1 gewonnen. Unterm Strich: ein Auftaktwochenende nach Maß!"
+      ]
+    },
+    {
+      "d": "Mai 2026",
+      "t": "Neuzugänge 1. Mannschaft",
+      "img": "/wp-content/uploads/2026/06/Neuzugaenge.jpg",
+      "p": [
+        "Bereits in der Winterpause hat Bastian Schreier seinen Rückwechsel zu Pfreimd angekündigt und jetzt ist es dann auch fix. 2023 wechselte Basti von Pfreimd zum SV Schwarzhofen und setzte sich dort als Stammtorhüter der Bezirksligamannschaft durch. Mit dieser gewonnen Erfahrung wird er ab kommender Saison wieder im Tor unserer Rot-Weißen stehen. Herzlich Willkommen zurück Basti. Wir bedanken uns in diesem Zuge auch bei Florian Bertelshofer und wünschen ihm viel Erfolg bei Detag Wernberg.",
+        "Ein weiterer Transfer den wir bekannt geben können, ist die Rückkehr von Julian Kiener zur SpVgg Pfreimd. Julian spielte bereits seit der Jugend bei uns und war im Herrenbereich immer eine gesetzte Größe. In seiner letzten Saison 23/24 kam er auf beachtliche 17 Tore in der BZL. Julian wird in der nächsten Saison das ein oder andere Ausrufezeichen setzen können. Die Erfahrung, die er bei der SpVgg Weiden und Luhe sammeln konnte werden uns sicherlich voranbringen. Neben Basti Schreier ein weiterer richtig starker Wechsel zurück auf Pfreimd."
+      ]
+    },
+    {
+      "d": "Mai 2026",
+      "t": "Trainingsauftakt der Herren",
+      "img": "/wp-content/uploads/2026/07/DFB-Mobil.jpg",
+      "p": [
+        "Großer Spaß für den Nachwuchs, ein lehrreicher Vortrag für die Vereinstrainer der SpVgg Pfreimd: Am 13.05.2026 besuchte der Deutsche Fußball-Bund (DFB) die SpVgg Pfreimd. Bei dem 70-minütigen Training wurden Praxistipps für ein modernes Kinder- und Jugendtraining vorgestellt, bei dem die Jugendtrainer aktiv am Demonstrationstraining teilnahmen. Der Vortrag zu verschiedenen aktuellen Themen des Fußballs (Qualifizierung, Amateurfußball sowie landesverbandsspezifische Themen) bildete den zweiten Baustein beim Etappenstopp des DFB-Mobils in Pfreimd.",
+        "Seit 2009 sind die DFB-Mobile schon auf Tour. In dieser Zeit hat das bundesweite Projekt beachtliche Erfolge eingefahren. Das DFB-Mobil wurde mittlerweile bei mehr als 32.000 Besuchen eingesetzt. Mit seinen Fahrzeugen – bis unters Dach vollgepackte Kleintransporter – fährt der DFB bundesweit bis an die Eingangstür der Vereinsheime und somit direkt an die Basis. Ziel ist es, den Nachwuchstrainern, die überwiegend nicht lizenziert sind, direkt und unkompliziert praktische Tipps zu geben.",
+        "Alle Kids trainierten an diesem Tag mit Spaß und großer Begeisterung und trugen so zu einer gelungenen Veranstaltung bei. Der Besuch des DFB-Mobils bildet somit einen weiteren Baustein innerhalb der Entwicklung in der Jugendarbeit der SpVgg Pfreimd. Ein großes Dankeschön der SpVgg Pfreimd an Tobi und Maximilian vom DFB."
+      ]
+    },
+    {
+      "d": "März 2026",
+      "t": "Neuaufstellung Team Platzwart",
+      "img": "/wp-content/uploads/2026/06/Platzwart.jpg",
+      "p": [
+        "Heute wollen wir euch zwei Neuzugänge außerhalb des aktiven Sports vorstellen. Mit Bernhard Mutzbauer und Günter Baldauf haben wir wieder zwei engagierte Platzwarte gewinnen können. Berni war ja bereits in der Vergangenheit im Team Technik dabei und kennt deshalb das Sportgelände sehr gut. Günni ist seit mehreren Jahren Jugendtrainer und deshalb auch kein Unbekannter. Wir wünschen beiden einen immer grünen Daumen und viel Erfolg im Greenkeepergeschäft.",
+        "Wir bedanken uns auch bei unserem ehemaligen Platzwart Robert Ebnet für seinen über viele Jahre hinweg guten Einsatz am Sportgelände."
+      ]
+    },
+    {
+      "d": "Februar 2026",
+      "t": "Trainingslager 2026 Pilsen",
+      "img": "/wp-content/uploads/2026/06/Trainingslager.jpg",
+      "p": [
+        "Im Rahmen der Wintervorbereitung waren wir dieses Jahr mit rund 45 Spielern im Trainingslager in Pilsen. Die Tage waren geprägt von intensiven Trainingseinheiten und abendlichen Teambuilding-Events. Insgesamt war das Trainingslager ein Erfolg und eine gute Grundlage für die kommende Phase der Saison. Ein großes Dankeschön an alle Spieler und Organisatoren – ihr habt das Wochenende zu etwas Besonderem gemacht!"
+      ]
+    },
+    {
+      "d": "22. Dezember 2025",
+      "t": "Firmenbesichtigung ÖKO-RANCH",
+      "img": "/wp-content/uploads/2026/06/Oeko-Ranch.jpg",
+      "p": [
+        "Am Montag vor Weihnachten waren wir mit einer kleinen Delegation bei der ÖKO-RANCH Bio-Brennstoff-Vertriebs-GmbH eingeladen. Die ÖKO-RANCH ist seit diesem Jahr Sponsor mit zusätzlicher Werbebande für RIKA-Brennöfen. Zudem erfolgte beim Besuch die Trikotübergabe an unsere A-Klassenmannschaft.",
+        "Das Unternehmen ist seit 1996 in Pfreimd ansässig und vertreibt hochwertige Brennstoffe und Öfen. Heuer wurden zudem zwei neue Lagerhallen errichtet, mit einem verfahrbaren Hochregallagersystem, welches uns ebenfalls vorgeführt wurde. Der Besuch gab uns einen guten Einblick in die Tätigkeiten des Unternehmens.",
+        "Wir bedanken uns bei den Geschäftsführern Jonas Meier und seinem Bruder Sebastian für die Betriebsführung und die Unterstützung."
+      ]
+    },
+    {
+      "d": "14. November 2025",
+      "t": "Firmenbesichtigung maturo GmbH",
+      "img": "/wp-content/uploads/2026/06/Maturo.jpg",
+      "p": [
+        "Vergangenen Freitag wurden wir zu einem ganz besonderen Event eingeladen. Die maturo GmbH aus Pfreimd hat eine Delegation der Herrenmannschaft zu einer Betriebsführung empfangen. Die Chefs, Gerhard Strehl und Gerald Lösch führten unsere Jungs durch die Hallen und stellten die Arbeitsweise und die Produkte des Unternehmens vor. Anschließend wurden wir noch zu Brotzeit und dem ein oder anderen Kaltgetränk eingeladen.",
+        "Der Besuch bei Fa. maturo stand zudem unter dem Zeichen der Übergabe von ZIP-Top „Power“ Sweatshirts mit der alle drei Herrenmannschaften persönlich ausgestattet wurden.",
+        "Vielen Dank an Gerd Strehl, Gerald Lösch und alle Mitarbeiter der maturo GmbH für den kurzweiligen und informativen Besuch und die Unterstützung unserer Herren."
+      ]
+    }
+  ],
+  "zeitung": [
+    [
+      "31.10.2026",
+      "Hahnbach",
+      "/wp-content/uploads/2026/11/2026_10_31-Stadionzeitung-Hahnbach.pdf"
+    ],
+    [
+      "10.10.2026",
+      "Raigering",
+      "/download/2553/"
+    ],
+    [
+      "26.09.2026",
+      "Schlicht",
+      "/download/2544/"
+    ],
+    [
+      "13.09.2026",
+      "Schwarzenfeld",
+      "/download/2541/"
+    ],
+    [
+      "23.08.2026",
+      "Weiden-Ost",
+      "/download/2492/"
+    ],
+    [
+      "14.08.2026",
+      "Tännesberg",
+      "/download/2474/"
+    ],
+    [
+      "02.08.2026",
+      "Etzenricht",
+      "/download/2467/"
+    ],
+    [
+      "19.07.2026",
+      "Auerbach",
+      "/download/2464/"
+    ],
+    [
+      "16.05.2026",
+      "Furth",
+      "/download/2195/"
+    ],
+    [
+      "19.04.2026",
+      "UPO",
+      "/download/2203/"
+    ],
+    [
+      "12.04.2026",
+      "Weiden II",
+      "/download/2207/"
+    ],
+    [
+      "29.03.2026",
+      "Amberg",
+      "/download/2212/"
+    ],
+    [
+      "15.03.2026",
+      "Weiden-Ost",
+      "/download/2217/"
+    ]
+  ],
+  "sparte": [
+    [
+      "Spartenleitung",
+      [
+        [
+          "Spartenleiter · Sport",
+          "Tobias Bernklau"
+        ],
+        [
+          "Spartenleiter · Medien/Sponsoring",
+          "Andreas Baumann"
+        ],
+        [
+          "Spartenleiter · Technische Infrastruktur",
+          "Richard Stich"
+        ],
+        [
+          "1. sportlicher Leiter",
+          "Florian Wilhelm"
+        ],
+        [
+          "2. sportlicher Leiter",
+          "Michael Prey"
+        ],
+        [
+          "1. Kassier",
+          "Oliver Meißner"
+        ],
+        [
+          "2. Kassier",
+          "Simon Amann"
+        ],
+        [
+          "Kassenrevisor",
+          "Fabian Strehl"
+        ],
+        [
+          "1. Schriftführer",
+          "Michael Hägler"
+        ],
+        [
+          "2. Schriftführer",
+          "Johannes Blödt"
+        ],
+        [
+          "Vereinsehrenamtsbeauftragter",
+          "Alexander Piehler"
+        ],
+        [
+          "Ausschussmitglieder",
+          "Stefan Mohaupt, Michael Lottner, Thomas Hösl, Daniel Leitmeier"
+        ]
+      ]
+    ],
+    [
+      "Trainer- und Betreuerstab",
+      [
+        [
+          "Trainer 1. Mannschaft",
+          "Michael Hartlich"
+        ],
+        [
+          "Co-Trainer 1. Mannschaft",
+          "Dennis Lobinger"
+        ],
+        [
+          "Betreuer 1. Mannschaft",
+          "Max Strehl"
+        ],
+        [
+          "Trainer 2. Mannschaft",
+          "Hannes Wurmstein"
+        ],
+        [
+          "Co-Trainer 2. Mannschaft",
+          "Fabian Strehl"
+        ],
+        [
+          "Betreuer 2. Mannschaft",
+          "Konrad Prax"
+        ],
+        [
+          "Trainer 3. Mannschaft",
+          "Alexander Piehler, Julian Blöth"
+        ]
+      ]
+    ]
+  ],
+  "historie": [
+    [
+      "Mai 2013",
+      "Meister Kreisliga West",
+      "Aufstieg in die Bezirksliga Oberpfalz Nord mit der 1. Mannschaft."
+    ],
+    [
+      "Mai 2016",
+      "Meister A-Klasse West",
+      "Aufstieg in die Kreisklasse West mit der 2. Mannschaft."
+    ],
+    [
+      "Mai 2018",
+      "Aufstieg in die Landesliga Mitte",
+      "mit der 1. Mannschaft."
+    ],
+    [
+      "Juni 2019",
+      "Klassenerhalt Landesliga",
+      "In zwei Relegationsrunden setzte sich die 1. Mannschaft gegen den FC Kosova Regensburg und den VfB Bach durch."
+    ],
+    [
+      "Dezember 2019",
+      "Sieger des Oberpfalz-Medien-Cups",
+      ""
+    ],
+    [
+      "Mai 2021",
+      "Abstieg in die Bezirksliga Oberpfalz Nord",
+      "mit der 1. Mannschaft."
+    ],
+    [
+      "Mai 2022",
+      "Meister Bezirksliga Oberpfalz Nord",
+      "Aufstieg in die Landesliga Mitte mit der 1. Mannschaft."
+    ],
+    [
+      "Mai 2022",
+      "Oberpfalzmeister",
+      "Sieg im Entscheidungsspiel gegen den Meister der Bezirksliga Oberpfalz Süd, TB 03 Roding."
+    ],
+    [
+      "Juli 2022",
+      "Sieger des Erdinger-Meister-Cups",
+      ""
+    ],
+    [
+      "Juli 2022",
+      "Gründung der 3. Mannschaft",
+      "Anmeldung in der B-Klasse Nord."
+    ],
+    [
+      "Mai 2023",
+      "Abstieg in die Bezirksliga Oberpfalz Nord",
+      "mit der 1. Mannschaft."
+    ],
+    [
+      "Mai 2024",
+      "Meister B-Klasse Nord",
+      "Aufstieg in die A-Klasse West 1 mit der 3. Mannschaft."
+    ],
+    [
+      "Mai 2026",
+      "Vizemeister Kreisklasse Nord",
+      "Erstes Relegationsspiel um den Aufstieg in die Kreisliga für die 2. Mannschaft."
+    ]
+  ],
+  "products": [
+    [
+      "Socken",
+      "Accessoires",
+      8,
+      "",
+      "/produkt/socken/",
+      "/wp-content/uploads/2026/08/Socken_Produktbild.png"
+    ],
+    [
+      "Gutscheinkarte",
+      "Geschenke",
+      10,
+      "10 / 20 / 30 / 50 €",
+      "/produkt/gutscheinkarte/",
+      "/wp-content/uploads/2026/05/pw-gift-card.png",
+      1
+    ],
+    [
+      "Tasse",
+      "Accessoires",
+      20,
+      "",
+      "/produkt/tasse/",
+      "/wp-content/uploads/2026/04/Tasse.jpg"
+    ],
+    [
+      "Cap burgunder",
+      "Accessoires",
+      30,
+      "",
+      "/produkt/cap-2/",
+      "/wp-content/uploads/2026/04/Cap_burgunder.jpg"
+    ],
+    [
+      "Cap navy",
+      "Accessoires",
+      30,
+      "",
+      "/produkt/cap/",
+      "/wp-content/uploads/2026/04/Cap_navy.jpg"
+    ],
+    [
+      "Regenschirm",
+      "Accessoires",
+      20,
+      "",
+      "/produkt/regenschirm/",
+      "/wp-content/uploads/2026/04/Regenschirm.jpg"
+    ],
+    [
+      "Badeschlappen",
+      "Accessoires",
+      30,
+      "Gr. 41–46",
+      "/produkt/badeschlappen/",
+      "/wp-content/uploads/2026/04/Badeschlappen.jpg"
+    ],
+    [
+      "Kissenbezug",
+      "Accessoires",
+      20,
+      "",
+      "/produkt/kissenbezug/",
+      "/wp-content/uploads/2026/04/Kissenbezug.jpg"
+    ],
+    [
+      "Anglerhut",
+      "Accessoires",
+      22,
+      "S–XL",
+      "/produkt/anglerhut/",
+      "/wp-content/uploads/2026/04/Anglerhut.jpg"
+    ],
+    [
+      "Sweater Herren",
+      "Freizeitbekleidung",
+      35,
+      "S–5XL · 3 Farben",
+      "/produkt/sweater-herren/",
+      "/wp-content/uploads/2026/04/TJ5429_Sweater_Herren_deepgreen.jpg"
+    ],
+    [
+      "Kapuzen Sweater Damen",
+      "Freizeitbekleidung",
+      40,
+      "S–XXL · 3 Farben",
+      "/produkt/kapuzen-sweater-damen/",
+      "/wp-content/uploads/2026/04/TJ5431_Kapuzen-Sweater_Damen_navy.jpg"
+    ],
+    [
+      "Kapuzen Sweater Herren",
+      "Freizeitbekleidung",
+      40,
+      "S–3XL · 3 Farben",
+      "/produkt/kapuzen-sweater-herren/",
+      "/wp-content/uploads/2026/04/TJ5430_Kapuzen-Sweater_Herren_flintstone.jpg"
+    ],
+    [
+      "Poloshirt Damen",
+      "Freizeitbekleidung",
+      30,
+      "S–3XL · 3 Farben",
+      "/produkt/poloshirt-damen/",
+      "/wp-content/uploads/2026/04/TJ145_T-Polshirt_Damen_black.jpg"
+    ],
+    [
+      "Poloshirt Herren",
+      "Freizeitbekleidung",
+      30,
+      "S–5XL · 3 Farben",
+      "/produkt/poloshirt-herren/",
+      "/wp-content/uploads/2026/04/TJ1405_T-Polshirt_Herren_leafgreen.jpg"
+    ],
+    [
+      "T-Shirt Damen",
+      "Freizeitbekleidung",
+      20,
+      "S–3XL · 3 Farben",
+      "/produkt/t-shirt-damen/",
+      "/wp-content/uploads/2026/04/TJ580_T-Shirt_Damen_black.jpg"
+    ],
+    [
+      "T-Shirt Herren",
+      "Freizeitbekleidung",
+      20,
+      "S–5XL · 3 Farben",
+      "/produkt/t-shirt-herren/",
+      "/wp-content/uploads/2026/04/TJ520_T-Shirt_Herren_kit.jpg"
+    ],
+    [
+      "Tasche „Iconic“ mit Bodenfach",
+      "Sportausrüstung",
+      40,
+      "M / L",
+      "/produkt/tasche-iconic-mit-bodenfach/",
+      "/wp-content/uploads/2026/04/Tasche-Iconic-mit-Bodenfach.jpg"
+    ],
+    [
+      "Tasche „Iconic“",
+      "Sportausrüstung",
+      30,
+      "M / L",
+      "/produkt/tasche-iconic/",
+      "/wp-content/uploads/2026/04/Tasche-Iconic.jpg"
+    ],
+    [
+      "Power Short",
+      "Sportausrüstung",
+      20,
+      "Kinder & Herren",
+      "/produkt/allround-short/",
+      "/wp-content/uploads/2025/04/Power-Short.jpg"
+    ],
+    [
+      "Freizeithose „Power“",
+      "Sportausrüstung",
+      28,
+      "Kinder, Herren & Damen",
+      "/produkt/freizeithose-power/",
+      "/wp-content/uploads/2026/04/Freizeithose-Power.jpg"
+    ],
+    [
+      "Coach Kapuzenjacke",
+      "Sportausrüstung",
+      65,
+      "Kinder & Herren",
+      "/produkt/coach-kapuzenjacke/",
+      "/wp-content/uploads/2026/04/Coach-Kapuzenjacke.jpg"
+    ],
+    [
+      "Allwetterjacke „Power“",
+      "Sportausrüstung",
+      48,
+      "Kinder & Herren",
+      "/produkt/allwetterjacke-power/",
+      "/wp-content/uploads/2026/04/Allwetterjacke-Power.jpg"
+    ],
+    [
+      "Base Hoodie",
+      "Sportausrüstung",
+      35,
+      "Kinder & Herren",
+      "/produkt/base-hoodie/",
+      "/wp-content/uploads/2026/04/Base-Hoodie.jpg"
+    ],
+    [
+      "T-Shirt „Power“",
+      "Sportausrüstung",
+      28,
+      "Kinder, Herren & Damen",
+      "/produkt/t-shirt-power/",
+      "/wp-content/uploads/2026/04/T-Shirt-Power.jpg"
+    ],
+    [
+      "ZIP-Top „Power“",
+      "Sportausrüstung",
+      41,
+      "Kinder & Herren",
+      "/produkt/zip-top-power/",
+      "/wp-content/uploads/2026/04/Zip-Top-Power.jpg"
+    ],
+    [
+      "Polyesterjacke „Power“",
+      "Sportausrüstung",
+      39,
+      "Kinder, Herren & Damen",
+      "/produkt/polyesterjacke-power/",
+      "/wp-content/uploads/2026/04/Polyesterjacke-Power.jpg"
+    ],
+    [
+      "Kapuzenjacke „Power“",
+      "Sportausrüstung",
+      45,
+      "Kinder, Herren & Damen",
+      "/produkt/kapuzenjacke-power/",
+      "/wp-content/uploads/2026/04/Kapuzenjacke-Power.jpg"
+    ]
+  ]
+}

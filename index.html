@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SpVgg Pfreimd</title>
+<meta name="description" content="Die App der SpVgg Pfreimd, Abteilung Fußball: News, Spiele, Tabellen, Teams und Fanshop.">
+<meta name="theme-color" content="#DB0000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SpVgg Pfreimd">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <header class="top"><div class="top-in gutter">
+    <img src="img/wappen.webp" alt="Wappen SpVgg Pfreimd" width="34" height="45">
+    <div class="brand"><b>SpVgg Pfreimd</b><span>Fußball · seit 1920</span></div>
+    <span class="src" id="src">Stand 04.11.</span>
+  </div></header>
+  <main id="view" class="gutter view"></main>
+</div>
+
+<nav class="tabs" aria-label="Bereiche"><div class="tabs-in">
+  <a href="#news" data-tab="news"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>News</a>
+  <a href="#spiele" data-tab="spiele"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5l3.2 2.3-1.2 3.7h-4l-1.2-3.7zM12 3.5v4M15.2 9.8l4-1.3M14 13.5l2.4 3.4M10 13.5l-2.4 3.4M8.8 9.8l-4-1.3"/></svg>Spiele</a>
+  <a href="#teams" data-tab="teams"><svg viewBox="0 0 24 24"><path d="M8.5 3.5L4 6l1.5 4H8v10.5h8V10h2.5L20 6l-4.5-2.5c-.5 1.4-1.8 2.3-3.5 2.3S9 4.9 8.5 3.5z"/></svg>Teams</a>
+  <a href="#shop" data-tab="shop"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6z"/><path d="M9 10V7a3 3 0 016 0v3"/></svg>Shop</a>
+  <a href="#mehr" data-tab="mehr"><svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></svg>Mehr</a>
+</div></nav>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="bar"><div class="bar-in gutter"><button class="back" id="back" type="button">‹ Zurück</button></div></div>
+  <div class="body gutter" id="sheet-body"></div>
+</div>
+</body>
+</html>
