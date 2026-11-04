@@ -180,7 +180,7 @@ function viewMehr() {
       ${L("Jugendfußball", "https://jugendfussball.spvgg-pfreimd.de/", "Homepage der Jugend")}
     </div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.3</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.4</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
