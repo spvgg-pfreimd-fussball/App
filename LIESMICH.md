@@ -26,8 +26,11 @@ Alle Änderungen gehen direkt auf github.com: Datei anklicken, oben rechts auf d
 **Neue News eintragen:** In `daten/inhalte.json` im Abschnitt `"news"` ganz oben einen Eintrag ergänzen:
 
 ```json
-{"d": "4. November 2026", "t": "Überschrift", "img": "https://…/bild.jpg",
- "p": ["Erster Absatz.", "Zweiter Absatz."]},
+    {"d": "4. November 2026", "t": "Überschrift", "img": "https://…/bild.jpg",
+      "p": [
+        "Erster Absatz.",
+        "Zweiter Absatz."
+      ]},
 ```
 
 `d` ist das Datum, `t` die Überschrift, `img` ein Bild (optional) und `p` die Absätze.
