@@ -91,25 +91,35 @@ const deDate = (d, t) => { const [dd, mm, yy] = String(d).split("."); return `${
 const STATUS = { "Abse.": "abgesetzt", "Ausf.": "ausgefallen", "Annul.": "annulliert", "Verl.": "verlegt", "Abbr.": "abgebrochen" };
 async function loadBfvTeam(j) {
   try {
+    /* Mannschaften ohne Wertung (F-/G-Junioren) haben nur einen Spielplan, keine Tabelle */
     const [mt, tb] = await Promise.all([
       getJSON(`${BFV}team/${j.bfvTeam}/matches`, 10000),
-      getJSON(`${BFV}competition/${j.bfvLiga}/table`, 10000).catch(() => null)
+      j.bfvLiga ? getJSON(`${BFV}competition/${j.bfvLiga}/table`, 10000).catch(() => null) : null
     ]);
     const me = j.bfvTeam;
+    const clean = n => String(n || "").replace(/\s*\(\d+\)\s*$/, "").trim();   // „(5)“ = 5er-Mannschaft
     const sp = (mt.data?.matches || []).map(x => {
       const homeOwn = x.homeTeamPermanentId === me;
       const txt = String(x.result || "").trim();
       const sc = /^(\d+)\s*:\s*(\d+)/.exec(txt);
+      const kick = deDate(x.kickoffDate, x.kickoffTime);
       let sec = "PRE", res = "", hg = null, ag = null, status = "";
-      if (sc) {
+      let home = homeOwn ? "Pfreimd" : clean(x.homeTeamName), away = x.guestTeamPermanentId === me ? "Pfreimd" : clean(x.guestTeamName);
+      /* Spielfeste: „Gastgeber (5) - Kinderfestival“ gegen uns → „Kinderfestival“ / „bei Gastgeber“ */
+      const fest = /^(.*?)\s*-\s*(Kinderfestival|Spielfest|Festival|Turnier|Spieltag)\s*$/i.exec(x.homeTeamName || "");
+      if (fest) {
+        const host = clean(fest[1]);
+        home = fest[2].replace(/^\w/, c => c.toUpperCase());
+        away = /pfreimd/i.test(host) && !/\//.test(host) ? "in Pfreimd (Heimspieltag)" : `bei ${host}`;
+      }
+      if (sc && !fest) {
         hg = +sc[1]; ag = +sc[2]; sec = "POST";
         const diff = homeOwn ? hg - ag : ag - hg;
         res = diff > 0 ? "win" : diff < 0 ? "defeat" : "draw";
-      } else if (txt && !/^[-:\s]*$/.test(txt)) { sec = "OFF"; status = STATUS[txt] || txt; }
+      } else if (txt && !/^[-:\s]*$/.test(txt) && !sc) { sec = "OFF"; status = STATUS[txt] || txt; }
+      else if (!j.bfvLiga && toDate(kick) < today()) { sec = "OFF"; status = "gespielt"; }
       const note = /meister/i.test(x.competitionType || "") ? "" : (x.competitionType || "").replace(/spiele$/, "spiel");
-      return [deDate(x.kickoffDate, x.kickoffTime),
-        homeOwn ? "Pfreimd" : x.homeTeamName, x.guestTeamPermanentId === me ? "Pfreimd" : x.guestTeamName,
-        hg, ag, sec, res, note, status];
+      return [kick, home, away, hg, ag, sec, res, note, status];
     });
     let tab = [];
     const t = tb?.data?.table;
@@ -123,7 +133,8 @@ async function loadBfvTeam(j) {
         return [pos, mine ? "Pfreimd" : r.team?.name, r.matches, r.matchesWon, r.matchesDrawn, r.matchesLost, "", r.goalsDiff, r.points, mark, mine ? 1 : 0];
       });
     }
-    state.bfv[j.id] = { liga: tb?.data?.competitionName || mt.data?.team?.competitionName || j.liga, tab, sp, ok: true };
+    const liga = tb?.data?.competitionName || mt.data?.team?.competitionName || mt.data?.matches?.[0]?.competitionName || j.liga || "";
+    state.bfv[j.id] = { liga, tab, sp, ok: true, noTable: !j.bfvLiga };
   } catch (e) {
     state.bfv[j.id] = { liga: j.liga, tab: [], sp: [], ok: false };
   }
@@ -220,23 +231,24 @@ function viewSpiele() {
   const all = [...HERREN.map(x => [x, TEAM_NAME[x]]), ...S.jugend.filter(j => j.bfvTeam).map(j => [j.id, j.name])];
   const chips = `<div class="chips teamchips" role="group" aria-label="Mannschaft">${all.map(([id, n], i) =>
     `${i === HERREN.length ? `<span class="chipsep" aria-hidden="true"></span>` : ""}<button class="chip" data-team="${id}" aria-pressed="${id === t}">${esc(n)}</button>`).join("")}</div>`;
-  const segM = `<div class="seg" role="group" aria-label="Ansicht"><button data-mode="spiele" aria-pressed="${state.spMode === "spiele"}">Spielplan</button><button data-mode="tabelle" aria-pressed="${state.spMode === "tabelle"}">Tabelle</button></div>`;
+  let segM = `<div class="seg" role="group" aria-label="Ansicht"><button data-mode="spiele" aria-pressed="${state.spMode === "spiele"}">Spielplan</button><button data-mode="tabelle" aria-pressed="${state.spMode === "tabelle"}">Tabelle</button></div>`;
   const src = isYouth(t) ? "BFV" : "FuPa";
   if (!f) return `${chips}<p class="note">Spiele und Tabelle werden geladen …</p>`;
   if (f.ok === false) return `${chips}<p class="note">Die Daten vom BFV sind gerade nicht erreichbar. Bitte versuche es später noch einmal.</p>
     <div><a class="btn ghost" href="${SITE}/${youth(t).seite}/" target="_blank" rel="noopener">Seite auf der Homepage ↗</a></div>`;
   let body;
-  if (state.spMode === "tabelle") body = tableHtml(f);
+  if (f.noTable) segM = "";
+  if (state.spMode === "tabelle" && !f.noTable) body = tableHtml(f);
   else {
     const all = matches(t);
     const up = all.filter(isUpcoming).sort((a, b) => a.d - b.d);
     const done = all.filter(m => !isUpcoming(m)).sort((a, b) => b.d - a.d);
     const tally = done.filter(m => m.sec === "POST").reduce((a, m) => (a[m.res] = (a[m.res] || 0) + 1, a), {});
-    body = `${up.length ? `<section class="sec"><h3 class="h">Kommende Spiele</h3><div class="card rows">${up.map(m => matchRow(t, m)).join("")}</div></section>` : ""}
-      ${done.length ? `<section class="sec"><h3 class="h">Ergebnisse <span class="muted tabnum" style="font-size:13px">${tally.win || 0} S · ${tally.draw || 0} U · ${tally.defeat || 0} N</span></h3><div class="card rows">${done.map(m => matchRow(t, m)).join("")}</div></section>` : ""}
+    body = `${up.length ? `<section class="sec"><h3 class="h">${f.noTable ? "Kommende Spieltage" : "Kommende Spiele"}</h3><div class="card rows">${up.map(m => matchRow(t, m)).join("")}</div></section>` : ""}
+      ${done.length ? `<section class="sec"><h3 class="h">${f.noTable ? "Vergangene Spieltage" : `Ergebnisse <span class="muted tabnum" style="font-size:13px">${tally.win || 0} S · ${tally.draw || 0} U · ${tally.defeat || 0} N</span>`}</h3><div class="card rows">${done.map(m => matchRow(t, m)).join("")}</div></section>` : ""}
       ${!up.length && !done.length ? `<p class="note">Noch keine Spiele eingetragen.</p>` : ""}`;
   }
-  return `${chips}<div class="liga"><span>${esc(f.liga)} · Saison 2026/27</span><span class="muted">Daten: ${src}</span></div>${segM}${body}`;
+  return `${chips}<div class="liga"><span>${esc(f.liga || teamName(t))} · Saison 2026/27</span><span class="muted">Daten: ${src}</span></div>${segM}${body}`;
 }
 
 function viewTeams() {
@@ -261,7 +273,7 @@ function youthCard(j) {
   const ph = youthPhoto(j);
   return `<a class="card yt" href="#teams/${j.id}">
     <span class="yph">${ph ? `<img src="${esc(ph)}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}<b>${esc(j.id.toUpperCase())}</b></span>
-    <span class="ytx"><b>${esc(j.name)}</b><span>${esc(j.alter)}${j.bfvTeam ? ` · ${esc(f?.liga || j.liga)}` : ""}</span></span>
+    <span class="ytx"><b>${esc(j.name)}</b><span>${esc(j.alter)}${f?.liga || j.liga ? ` · ${esc(f?.liga || j.liga)}` : ""}</span></span>
     ${me ? `<span class="ypos tabnum"><b>${me[0]}.</b><small>Platz</small></span>` : `<span class="chev" aria-hidden="true">›</span>`}
   </a>`;
 }
@@ -276,16 +288,18 @@ function youthSheet(id) {
       const me = f.tab.find(r => r[10]);
       const all = matches(id);
       const up = all.filter(isUpcoming).sort((a, b) => a.d - b.d).slice(0, 2);
-      const done = all.filter(m => m.sec === "POST").sort((a, b) => b.d - a.d).slice(0, 3);
+      const done = all.filter(m => f.noTable ? !isUpcoming(m) : m.sec === "POST").sort((a, b) => b.d - a.d).slice(0, 3);
       data = `${me ? `<div class="stats tabnum"><div><b>${me[0]}.</b><span>Platz</span></div><div><b>${me[8]}</b><span>Punkte</span></div><div><b>${me[2]}</b><span>Spiele</span></div></div>` : ""}
-        ${up.length ? `<section class="sec"><h3 class="h">Nächste Spiele</h3><div class="card rows">${up.map(m => matchRow(id, m)).join("")}</div></section>` : ""}
-        ${done.length ? `<section class="sec"><h3 class="h">Letzte Ergebnisse</h3><div class="card rows">${done.map(m => matchRow(id, m)).join("")}</div></section>` : ""}
+        ${f.noTable ? `<p class="note">In dieser Altersklasse wird ohne Ergebnisse und Tabelle gespielt. Hier steht der Spielplan.</p>` : ""}
+        ${up.length ? `<section class="sec"><h3 class="h">${f.noTable ? "Nächste Spieltage" : "Nächste Spiele"}</h3><div class="card rows">${up.map(m => matchRow(id, m)).join("")}</div></section>`
+          : f.noTable ? `<p class="muted">Die nächsten Spieltage sind noch nicht eingetragen.</p>` : ""}
+        ${done.length ? `<section class="sec"><h3 class="h">${f.noTable ? "Letzte Spieltage" : "Letzte Ergebnisse"}</h3><div class="card rows">${done.map(m => matchRow(id, m)).join("")}</div></section>` : ""}
         ${f.tab.length ? `<section class="sec"><h3 class="h">Tabelle</h3>${tableHtml(f, true)}</section>` : ""}
-        <div><button class="btn" data-go-team="${id}">Alle Spiele</button></div>`;
+        <div><button class="btn" data-go-team="${id}">${f.noTable ? "Ganzer Spielplan" : "Alle Spiele"}</button></div>`;
     }
   }
   return `${ph ? `<img class="hero" src="${esc(ph)}" alt="Mannschaftsfoto ${esc(j.name)}" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}
-    <div><h2 id="sheet-title">${esc(j.name)}</h2><div class="muted">${esc(j.alter)}${j.bfvTeam ? ` · ${esc(f?.liga || j.liga)}` : ""}</div></div>
+    <div><h2 id="sheet-title">${esc(j.name)}</h2><div class="muted">${esc(j.alter)}${f?.liga || j.liga ? ` · ${esc(f?.liga || j.liga)}` : ""}</div></div>
     ${data}
     ${j.trainer?.length ? `<section class="sec"><h3 class="h">Trainerteam</h3><div class="card kv">${j.trainer.map(n => `<div>${esc(n)}</div>`).join("")}</div></section>` : ""}
     <div><a class="btn ghost" href="${SITE}/${j.seite}/" target="_blank" rel="noopener">Seite auf der Homepage ↗</a></div>`;
@@ -323,7 +337,7 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.9</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.10</div>`;
 }
 
 /* ---------- Detailseiten ---------- */

@@ -99,7 +99,7 @@
     {"id": "e1", "name": "E-Junioren I", "alter": "U11", "seite": "e-junioren-i", "page": 2110, "liga": "U11 (E-Jun) SAD Q-B 1", "bfvTeam": "011MIC9E60000000VTVG0001VTR8C1K7", "bfvLiga": "031LJKVKKO000006VS5489BUVVKNMR0J-G", "trainer": ["Thomas Hösl", "Stefan Kiener"]},
     {"id": "e2", "name": "E-Junioren II", "alter": "U11", "seite": "e-junioren-ii", "page": 2113, "liga": "U11 (E-Jun) SAD Q-C 1", "bfvTeam": "02MBPB754S000000VS5489B1VV4JLPLE", "bfvLiga": "031LJKVKUO000006VS5489BUVVKNMR0J-G", "trainer": ["Sebastian Braun", "David Beck"]},
     {"id": "e3", "name": "E-Junioren III", "alter": "U11", "seite": "e-junioren-iii", "page": 2571, "liga": "U11 (E-Jun) SAD Q-D (5er)", "bfvTeam": "031DQFS50K000000VS5489BSVU7CJV8J", "bfvLiga": "031LJKVL9C000005VS5489BUVVKNMR0J-G", "trainer": ["Sebastian Braun", "Stefan Kiener"]},
-    {"id": "f1", "name": "F-Junioren I", "alter": "U9", "seite": "f-junioren-i", "page": 2120, "trainer": ["Marco Pressl", "Tassin Kadir"]},
+    {"id": "f1", "name": "F-Junioren I", "alter": "U9", "seite": "f-junioren-i", "page": 2120, "bfvTeam": "011MIEHFIG000000VTVG0001VTR8C1K7", "trainer": ["Marco Pressl", "Tassin Kadir"]},
     {"id": "f2", "name": "F-Junioren II", "alter": "U9", "seite": "f-junioren-ii", "page": 2124, "trainer": ["Tobias Bernklau", "Michael Brummer"]},
     {"id": "g", "name": "G-Junioren", "alter": "U7", "seite": "g-junioren", "page": 2624, "trainer": ["Michael Lottner", "Thomas Brummer", "Stefan Zimmermann"]}
   ],
