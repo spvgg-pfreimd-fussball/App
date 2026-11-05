@@ -6,7 +6,8 @@
    ========================================================= */
 (() => {
 "use strict";
-/* Inhalte (News, Termine, Teams, Stadionzeitung ...) stehen in daten/inhalte.json */
+/* Inhalte (News, Ankündigungen, Teams, Stadionzeitung ...) stehen in daten/inhalte.json
+   (Ankündigungen heißen dort intern "events") */
 let S = null;
 const SITE = "https://fussball.spvgg-pfreimd.de";
 const WAPPEN = "img/wappen.webp";
@@ -195,9 +196,9 @@ function viewNews() {
   const youthBlock = yList.length ? `<section class="sec"><h2 class="h">${ySoon.length ? "Jugend diese Woche" : "Jugend: letzte Ergebnisse"} <a href="#teams" data-group="jugend">Alle Teams</a></h2>
     <div class="card rows">${yList.slice(0, 8).map(([t, m]) => matchRow(t, m, true)).join("")}</div></section>` : "";
   const ed = isEditor();
-  const evs = S.events.filter(e => toDate(e.d) >= today());
-  const events = evs.length || ed ? `<section class="sec"><h2 class="h">Termine ${ed ? `<a href="#news/red-termin-neu">+ Neuer Termin</a>` : ""}</h2><div class="events">${evs.map(e => { const d = toDate(e.d);
-      return `<div class="card ev"><div class="cal"><i>${MON[d.getMonth()]}</i><b class="tabnum">${d.getDate()}</b></div><span>${esc(e.t)}</span></div>`; }).join("")}</div></section>` : "";
+  const evs = S.events.map((e, i) => [e, i]).filter(([e]) => toDate(e.d) >= today());
+  const events = evs.length || ed ? `<section class="sec"><h2 class="h">Ankündigungen ${ed ? `<a href="#news/red-ank-neu">+ Neue Ankündigung</a>` : ""}</h2><div class="events">${evs.map(([e, i]) => { const d = toDate(e.d);
+      return `<a class="card ev" href="#news/ank-${i}"><div class="cal"><i>${MON[d.getMonth()]}</i><b class="tabnum">${d.getDate()}</b></div><span>${esc(e.t)}</span>${e.img ? `<img class="evthumb" src="${esc(abs(e.img))}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}</a>`; }).join("")}</div></section>` : "";
   const z = S.zeitung[0];
   return `${hero}
     <div class="minis">${minis}</div>
@@ -317,13 +318,12 @@ function viewMehr() {
       ${B("Kontakt", "kontakt", "E-Mail und Kontaktformular")}
       ${L("Unfallmeldung", "/unfallmeldung/", "Formular auf der Homepage")}
       ${L("Mitglied werden", "https://www.spvgg-pfreimd.de/beitritt1.pdf", "Beitrittserklärung als PDF")}
-      ${L("Jugendfußball", "https://jugendfussball.spvgg-pfreimd.de/", "Homepage der Jugend")}
     </div></section>
     <section class="sec"><h2 class="h">Redaktion</h2><div class="card list">${isEditor()
-      ? `<a class="li" href="#mehr/red"><span>News, Termine & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
+      ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.8</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.9</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -336,7 +336,7 @@ const SHEETS = {
     <div><a class="btn" href="${SITE}/vereinshymne/" target="_blank" rel="noopener">Hymne anhören ↗</a></div>`,
   zeitung: () => `<h2 id="sheet-title">Stadionzeitung</h2><div class="card list">${S.zeitung.map(z => `<a class="li" href="${abs(z[2])}" target="_blank" rel="noopener"><span>${esc(z[1])}<small class="tabnum">${z[0]}</small></span><span class="ext" aria-hidden="true">PDF ↗</span></a>`).join("")}</div>`,
   anfahrt: () => `<h2 id="sheet-title">Anfahrt</h2><div class="card kv"><div><span>Anschrift</span>Fußball Pfreimd<br>Stadtgraben 15, 92536 Pfreimd</div></div>
-    <div><a class="btn" href="https://www.google.com/maps/place/SpVgg+Pfreimd+e.V.+-+Abteilung+Fu%C3%9Fball/@49.4955602,12.1798444,17z" target="_blank" rel="noopener">In Google Maps öffnen ↗</a></div>`,
+    <div><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Stadtgraben%2015%2C%2092536%20Pfreimd" target="_blank" rel="noopener">In Google Maps öffnen ↗</a></div>`,
   kontakt: () => `<h2 id="sheet-title">Kontakt</h2><p>Schreib uns direkt per E-Mail oder nutze das Formular auf der Homepage.</p>
     <div class="copy"><code id="mail">info@fussball.spvgg-pfreimd.de</code><button class="btn ghost" data-copy="mail" type="button">Kopieren</button></div>
     <div><a class="btn" href="${SITE}/kontakt/" target="_blank" rel="noopener">Kontaktformular öffnen ↗</a></div>`
@@ -356,6 +356,13 @@ function closeSheet() {
   lastFocus?.focus?.({ preventScroll: true });
 }
 const linkify = t => esc(t).replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)]/g, u => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+function openEvent(i) {
+  const e = S.events[i], d = toDate(e.d), txt = e.p || [];
+  openSheet(`<span class="date">${WD[d.getDay()]}, ${longDate(d)}</span><h2 id="sheet-title">${esc(e.t)}</h2>
+    ${e.img ? `<a href="${esc(abs(e.img))}" target="_blank" rel="noopener" aria-label="Flyer groß öffnen"><img class="hero" src="${esc(abs(e.img))}" alt="Flyer: ${esc(e.t)}" data-wait onload="__imgOk(this)" onerror="__imgErr(this)"></a>` : ""}
+    ${txt.map(x => `<p class="pre">${linkify(x)}</p>`).join("")}
+    ${isEditor() ? `<div><a class="btn ghost" href="#news/red-ank-${i}">Diese Ankündigung bearbeiten</a></div>` : ""}`);
+}
 function openNews(i) {
   const n = S.news[i];
   if (n.entwurf && !isEditor()) return closeSheet();
@@ -422,6 +429,7 @@ function applyRoute() {
     Object.assign(red, { img: null, imgRemoved: false, pdf: null });
     openSheet(redSheet(detail));
   }
+  else if (detail !== null && /^ank-\d+$/.test(detail) && S.events[+detail.slice(4)]) openEvent(+detail.slice(4));
   else if (detail !== null && view === "news" && S.news[+detail]) openNews(+detail);
   else if (detail !== null && view === "teams" && youth(detail)) openSheet(youthSheet(detail));
   else if (detail !== null && SHEETS[detail]) openSheet(SHEETS[detail]());
@@ -480,7 +488,7 @@ function selectText(id) { const r = document.createRange(); r.selectNodeContents
 document.getElementById("back").addEventListener("click", goBack);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !document.getElementById("sheet").hidden) goBack(); });
 
-/* ---------- Redaktion: News, Termine und Stadionzeitung am Handy bearbeiten ----------
+/* ---------- Redaktion: News, Ankündigungen und Stadionzeitung am Handy bearbeiten ----------
    Gespeichert wird direkt im GitHub-Repository (daten/inhalte.json, Fotos in img/news/,
    Stadionzeitungen in zeitung/). Jede Änderung ist ein eigener Eintrag in der
    Versionsgeschichte und lässt sich dort zurücknehmen.
@@ -591,13 +599,13 @@ function redSheet(key) {
   const [, kind, idx] = key.split("-");
   if (!kind) return redHome();
   if (kind === "news") return redNewsForm(idx);
-  if (kind === "termin") return redTerminForm(idx);
+  if (kind === "ank") return redAnkForm(idx);
   if (kind === "zeitung") return redZeitungForm(idx);
   return redHome();
 }
 function redLogin() {
   return `<h2 id="sheet-title">Redaktion</h2>
-    <p>Hier meldest du dich einmalig mit deinem GitHub-Zugangsschlüssel an. Danach kannst du News, Termine und die Stadionzeitung direkt am Handy bearbeiten.</p>
+    <p>Hier meldest du dich einmalig mit deinem GitHub-Zugangsschlüssel an. Danach kannst du News, Ankündigungen und die Stadionzeitung direkt am Handy bearbeiten.</p>
     <form id="loginform" class="form" autocomplete="off">
       <label for="tok">Zugangsschlüssel<input id="tok" type="password" required spellcheck="false" autocapitalize="off" placeholder="github_pat_…"></label>
       <div class="formbtns"><button class="btn" type="submit">Anmelden</button></div>
@@ -612,14 +620,22 @@ function redHome() {
     <p class="muted">Änderungen sind nach etwa ein bis zwei Minuten für alle sichtbar. Jede Änderung wird als eigene Version gespeichert.</p>
     <section class="sec"><h3 class="h">News <a href="#${base}/red-news-neu">+ Neue News</a></h3>
       <div class="card list">${S.news.map((n, i) => L(`red-news-${i}`, n.t, n.d + (n.entwurf ? " · Entwurf" : ""))).join("") || `<p class="li muted">Noch keine News.</p>`}</div></section>
-    <section class="sec"><h3 class="h">Termine <a href="#${base}/red-termin-neu">+ Neuer Termin</a></h3>
-      <div class="card list">${S.events.map((e, i) => L(`red-termin-${i}`, e.t, isoToDe(e.d) + (toDate(e.d) < today() ? " · vorbei" : ""))).join("") || `<p class="li muted">Noch keine Termine.</p>`}</div></section>
+    <section class="sec"><h3 class="h">Ankündigungen <a href="#${base}/red-ank-neu">+ Neue Ankündigung</a></h3>
+      <div class="card list">${S.events.map((e, i) => L(`red-ank-${i}`, e.t, isoToDe(e.d) + (e.img ? " · mit Bild" : "") + (toDate(e.d) < today() ? " · vorbei" : ""))).join("") || `<p class="li muted">Noch keine Ankündigungen.</p>`}</div></section>
     <section class="sec"><h3 class="h">Stadionzeitung <a href="#${base}/red-zeitung-neu">+ Neue Ausgabe</a></h3>
       <div class="card list">${S.zeitung.map((z, i) => L(`red-zeitung-${i}`, z[1], z[0] + (i === 0 ? " · aktuelle Ausgabe" : ""))).join("")}</div></section>
     <div><button class="btn ghost" type="button" data-red="logout">Abmelden</button></div>`;
 }
 function delBtns(isNew, extra = "") {
   return isNew ? "" : `<div class="formbtns">${extra}<button class="btn danger" type="button" data-red="delete">Löschen</button></div>`;
+}
+function imgField(img, label) {
+  return `<div class="field"><span class="flabel">${label}</span>
+        <img id="f-prev" class="prev" src="${esc(img)}" alt="" ${img ? "" : "hidden"}>
+        <div class="formbtns">
+          <label class="btn ghost filebtn">${img ? "Anderes Bild" : "Bild wählen"}<input id="f-img" class="vh" type="file" accept="image/*"></label>
+          <button class="btn ghost" type="button" data-red="img-remove" ${img ? "" : "hidden"}>Bild entfernen</button>
+        </div></div>`;
 }
 function redNewsForm(idx) {
   const n = idx === "neu" ? null : S.news[+idx];
@@ -630,26 +646,24 @@ function redNewsForm(idx) {
       <label for="f-t">Überschrift<input id="f-t" required value="${esc(n?.t || "")}"></label>
       <label for="f-d">Datum<input id="f-d" required value="${esc(n?.d || longDate(new Date()))}"><small class="hint">So erscheint es in der App, z. B. „${longDate(new Date())}“ oder „Mai 2026“.</small></label>
       <label for="f-p">Text<textarea id="f-p" rows="10">${esc((n?.p || []).join("\n\n"))}</textarea><small class="hint">Eine Leerzeile beginnt einen neuen Absatz.</small></label>
-      <div class="field"><span class="flabel">Foto</span>
-        <img id="f-prev" class="prev" src="${esc(img)}" alt="" ${img ? "" : "hidden"}>
-        <div class="formbtns">
-          <label class="btn ghost filebtn">${img ? "Anderes Foto" : "Foto wählen"}<input id="f-img" class="vh" type="file" accept="image/*"></label>
-          <button class="btn ghost" type="button" data-red="img-remove" ${img ? "" : "hidden"}>Foto entfernen</button>
-        </div></div>
+      ${imgField(img, "Foto")}
       <label class="check"><input id="f-draft" type="checkbox" ${n?.entwurf ? "checked" : ""}> Als Entwurf speichern (nur für dich sichtbar)</label>
       <div class="formbtns"><button class="btn" type="submit">Speichern</button></div>
       <p id="f-msg" class="formmsg" role="alert"></p>
       ${delBtns(!n, `<button class="btn ghost" type="button" data-red="up" ${+idx === 0 ? "disabled" : ""}>Nach oben</button><button class="btn ghost" type="button" data-red="down" ${+idx === S.news.length - 1 ? "disabled" : ""}>Nach unten</button>`)}
     </form>`;
 }
-function redTerminForm(idx) {
+function redAnkForm(idx) {
   const e = idx === "neu" ? null : S.events[+idx];
   if (idx !== "neu" && !e) return redHome();
-  return `<h2 id="sheet-title">${e ? "Termin bearbeiten" : "Neuer Termin"}</h2>
-    <form id="redform" class="form" data-kind="termin" data-idx="${esc(idx)}">
+  const img = e?.img ? abs(e.img) : "";
+  return `<h2 id="sheet-title">${e ? "Ankündigung bearbeiten" : "Neue Ankündigung"}</h2>
+    <form id="redform" class="form" data-kind="ank" data-idx="${esc(idx)}">
       <label for="f-date">Datum<input id="f-date" type="date" required value="${esc(e?.d || "")}"></label>
       <label for="f-t">Bezeichnung<input id="f-t" required value="${esc(e?.t || "")}" placeholder="z. B. Christbaumversteigerung"></label>
-      <p class="hint">Vergangene Termine blendet die App automatisch aus.</p>
+      <label for="f-p">Text (optional)<textarea id="f-p" rows="6" placeholder="z. B. Uhrzeit, Ort, Programm">${esc((e?.p || []).join("\n\n"))}</textarea><small class="hint">Eine Leerzeile beginnt einen neuen Absatz.</small></label>
+      ${imgField(img, "Flyer oder Bild (optional)")}
+      <p class="hint">Auf der Startseite erscheint eine kleine Vorschau, ein Tipp darauf zeigt das Bild groß. Vergangene Ankündigungen blendet die App automatisch aus.</p>
       <div class="formbtns"><button class="btn" type="submit">Speichern</button></div>
       <p id="f-msg" class="formmsg" role="alert"></p>
       ${delBtns(!e)}
@@ -690,13 +704,18 @@ async function saveForm(form) {
       if (red.img) item.img = await ghUpload(`img/news/${isoDate(new Date())}-${slug(item.t)}-${Date.now().toString(36)}.jpg`, red.img, `Foto für News „${item.t}“`);
       await saveData(d => { if (isNew) d.news.unshift(item); else d.news[findIdx(d.news, orig, idx, newsKey)] = item; },
         `${isNew ? "Neue News" : "News geändert"}: ${item.t}`);
-    } else if (kind === "termin") {
+    } else if (kind === "ank") {
       const orig = isNew ? null : S.events[+idx];
       const item = { d: v("f-date"), t: v("f-t") };
+      const paras = v("f-p").split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
+      let img = red.imgRemoved ? "" : (orig?.img || "");
+      if (red.img) img = await ghUpload(`img/ankuendigungen/${item.d}-${slug(item.t)}-${Date.now().toString(36)}.jpg`, red.img, `Bild für Ankündigung „${item.t}“`);
+      if (img) item.img = img;
+      if (paras.length) item.p = paras;
       await saveData(d => {
         if (isNew) d.events.push(item); else d.events[findIdx(d.events, orig, idx, evKey)] = item;
         d.events.sort((a, b) => a.d.localeCompare(b.d));
-      }, `${isNew ? "Neuer Termin" : "Termin geändert"}: ${item.t}`);
+      }, `${isNew ? "Neue Ankündigung" : "Ankündigung geändert"}: ${item.t}`);
     } else if (kind === "zeitung") {
       const orig = isNew ? null : S.zeitung[+idx];
       const iso = v("f-date"), gegner = v("f-t");
@@ -728,8 +747,8 @@ async function redAction(b) {
   }
   if (!form || red.busy) return;
   const kind = form.dataset.kind, idx = form.dataset.idx, msg = form.querySelector("#f-msg");
-  const list = { news: "news", termin: "events", zeitung: "zeitung" }[kind];
-  const key = { news: newsKey, termin: evKey, zeitung: zKey }[kind];
+  const list = { news: "news", ank: "events", zeitung: "zeitung" }[kind];
+  const key = { news: newsKey, ank: evKey, zeitung: zKey }[kind];
   const orig = S[list][+idx];
   if (a === "delete" && !b.dataset.armed) {
     b.dataset.armed = "1"; b.textContent = "Wirklich löschen? Nochmal tippen";
@@ -771,7 +790,8 @@ document.addEventListener("change", async e => {
   if (e.target.id === "f-img" && e.target.files[0]) {
     const msg = document.getElementById("f-msg");
     try {
-      red.img = await shrinkImage(e.target.files[0]); red.imgRemoved = false;
+      const flyer = document.getElementById("redform")?.dataset.kind === "ank";
+      red.img = await shrinkImage(e.target.files[0], flyer ? 1800 : 1400); red.imgRemoved = false;
       const prev = document.getElementById("f-prev");
       prev.src = URL.createObjectURL(new Blob([red.img], { type: "image/jpeg" })); prev.hidden = false; prev.removeAttribute("data-wait");
       document.querySelector('[data-red="img-remove"]').hidden = false;

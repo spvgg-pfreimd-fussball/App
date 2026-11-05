@@ -272,3 +272,7 @@ p.li{margin:0;cursor:default}
 .wpbody h4{margin:8px 0 0;font-family:var(--f-head);font-weight:800;font-size:17px;color:var(--red)}
 .wpbody hr{border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
 .wpbody img{max-width:100%;width:auto;margin:0 auto}
+
+/* Ankündigungen mit Mini-Vorschau (ab Version 1.9) */
+a.ev{text-decoration:none;color:inherit}
+.evthumb{width:52px;height:52px;flex:none;border-radius:10px;object-fit:cover;background:var(--surface-2);margin-left:2px}

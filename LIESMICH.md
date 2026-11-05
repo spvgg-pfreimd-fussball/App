@@ -10,7 +10,7 @@ Sie läuft im Browser und lässt sich auf jedem Handy wie eine App auf den Start
 | `index.html` | Grundgerüst der App: Kopfleiste, Inhaltsbereich, Leiste unten |
 | `style.css` | Gestaltung. Ganz oben stehen die Farben (`--red` ist das Vereinsrot) |
 | `app.js` | Programmlogik: Daten laden und die fünf Bereiche anzeigen |
-| `daten/inhalte.json` | **Alle Texte und Inhalte**: News, Termine, Teams, Stadionzeitungen, Spartenbesetzung, Historie |
+| `daten/inhalte.json` | **Alle Texte und Inhalte**: News, Ankündigungen (intern `events`), Teams, Stadionzeitungen, Spartenbesetzung, Historie |
 | `img/` | Wappen und App-Symbole |
 | `manifest.webmanifest`, `sw.js` | Sorgen dafür, dass die App installierbar ist und offline startet |
 
@@ -21,9 +21,9 @@ Die App lädt alles beim Öffnen neu, beim Zurückkehren nach mehr als 5 Minuten
 
 ## Redaktion in der App (am bequemsten)
 
-News, Termine und die Stadionzeitung lassen sich direkt in der App bearbeiten: **Mehr → Redaktion**.
+News, Ankündigungen und die Stadionzeitung lassen sich direkt in der App bearbeiten: **Mehr → Redaktion**.
 Die App speichert dabei in dieses Repository – jede Änderung erscheint unter **Commits** mit dem Zusatz
-„(über die App)“ und lässt sich dort zurücknehmen. Fotos landen in `img/news/`, hochgeladene Stadionzeitungen in `zeitung/`.
+„(über die App)“ und lässt sich dort zurücknehmen. Fotos landen in `img/news/` bzw. `img/ankuendigungen/`, hochgeladene Stadionzeitungen in `zeitung/`.
 
 Zum Anmelden braucht die App einen persönlichen GitHub-Zugangsschlüssel (Fine-grained token), der nur
 dieses Repository ändern darf: [neuen Schlüssel anlegen](https://github.com/settings/personal-access-tokens/new),
@@ -49,8 +49,9 @@ Alle Änderungen gehen direkt auf github.com: Datei anklicken, oben rechts auf d
 `d` ist das Datum, `t` die Überschrift, `img` ein Bild (optional) und `p` die Absätze.
 Wichtig: Nach jedem Eintrag außer dem letzten steht ein Komma.
 
-**Neuen Termin eintragen:** Im Abschnitt `"events"` ein Eintrag wie `{"d": "2026-12-27", "t": "Christbaumversteigerung"}`.
-Das Datum steht als Jahr-Monat-Tag. Vergangene Termine blendet die App automatisch aus.
+**Neue Ankündigung eintragen:** Im Abschnitt `"events"` ein Eintrag wie `{"d": "2026-12-27", "t": "Christbaumversteigerung"}`,
+optional mit `"img"` (Flyer) und `"p"` (Absätze wie bei News).
+Das Datum steht als Jahr-Monat-Tag. Vergangene Ankündigungen blendet die App automatisch aus.
 
 **Neue Stadionzeitung:** Das PDF wie gewohnt in WordPress hochladen und im Abschnitt `"zeitung"` ganz oben eintragen:
 `["31.10.2026", "Hahnbach", "https://…/Stadionzeitung.pdf"]`. Die oberste Ausgabe erscheint auf der Startseite.
