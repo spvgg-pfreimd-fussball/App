@@ -14,9 +14,10 @@ Sie läuft im Browser und lässt sich auf jedem Handy wie eine App auf den Start
 | `img/` | Wappen und App-Symbole |
 | `manifest.webmanifest`, `sw.js` | Sorgen dafür, dass die App installierbar ist und offline startet |
 
-**Was automatisch kommt:** Spielpläne, Ergebnisse und Tabellen holt die App live von FuPa.
+**Was automatisch kommt:** Das Leitbild (Mehr → Verein) wird live von der Homepage-Seite „Leitbild“ übernommen – Änderungen dort erscheinen automatisch in der App. Außerdem: Spielpläne, Ergebnisse und Tabellen holt die App live von FuPa.
 Die Shop-Artikel kommen live aus dem WooCommerce-Shop der Homepage.
 Klappt das einmal nicht, zeigt die App den letzten Datenstand aus `daten/inhalte.json`.
+Die App lädt alles beim Öffnen neu, beim Zurückkehren nach mehr als 5 Minuten, und solange sie offen ist alle 15 Minuten (am Spieltag alle 2 Minuten).
 
 ## Redaktion in der App (am bequemsten)
 

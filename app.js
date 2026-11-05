@@ -78,9 +78,10 @@ async function loadLive() {
           x.homeGoal, x.awayGoal, x.section, x.resultForTeam || ""])
       };
     }
+    const changed = JSON.stringify(next) !== JSON.stringify(state.fupa);
     state.fupa = next; state.live = true;
-    document.getElementById("src").textContent = "Live · FuPa";
-    invalidate(); render();
+    stamp();
+    if (changed) { invalidate(); render(); }
   } catch (e) { /* kein Netz oder gesperrt: Datenstand bleibt */ }
 }
 
@@ -127,8 +128,9 @@ async function loadBfvTeam(j) {
   }
 }
 async function loadYouth() {
+  const before = JSON.stringify(state.bfv);
   await Promise.all(S.jugend.filter(j => j.bfvTeam).map(loadBfvTeam));
-  invalidate(); render(); refreshSheet();
+  if (JSON.stringify(state.bfv) !== before) { invalidate(); render(); refreshSheet(); }
 }
 /* Mannschaftsfotos der Jugend: erstes großes Bild der jeweiligen Homepage-Seite */
 async function loadPhotos() {
@@ -303,6 +305,7 @@ function viewMehr() {
   const B = (label, key, sub) => `<button class="li" data-sheet="${key}"><span>${label}${sub ? `<small>${sub}</small>` : ""}</span><span class="chev" aria-hidden="true">›</span></button>`;
   return `<section class="sec"><h2 class="h">Verein</h2><div class="card list">
       ${B("Spartenbesetzung", "sparte", "Spartenleitung, Trainer und Betreuer")}
+      ${B("Leitbild", "leitbild", "Jugendkonzept und Verhaltensgrundsätze")}
       ${B("Historie", "historie", "Erfolge seit 2013")}
       ${B("Vereinshymne", "hymne", "„Die Rot-Weißen“")}
       ${L("Sponsoren", "/sponsoren/", "Unsere Partner auf der Homepage")}
@@ -320,11 +323,12 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Termine & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.7</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.8</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
 const SHEETS = {
+  leitbild: () => wpSheet("leitbild"),
   sparte: () => `<h2 id="sheet-title">Spartenbesetzung</h2><p class="muted">Unsere ehrenamtlichen Verantwortlichen der Sparte Fußball.</p>
     ${S.sparte.map(([g, rows]) => `<section class="sec"><h3 class="h">${esc(g)}</h3><div class="card kv">${rows.map(r => `<div><span>${esc(r[0])}</span>${esc(r[1])}</div>`).join("")}</div></section>`).join("")}`,
   historie: () => `<h2 id="sheet-title">Historie</h2><ol class="tl" reversed>${[...S.historie].reverse().map(h => `<li><span class="when">${esc(h[0])}</span><b>${esc(h[1])}</b>${h[2] ? `<p>${esc(h[2])}</p>` : ""}</li>`).join("")}</ol>`,
@@ -798,15 +802,135 @@ async function loadShop() {
   try {
     const list = await getJSON(`${SITE}/wp-json/wc/store/v1/products?per_page=100`);
     const dec = s => { const t = document.createElement("textarea"); t.innerHTML = s; return t.value; };
+    const before = JSON.stringify(state.products);
     state.products = list.map(p => {
       const div = 10 ** (p.prices.currency_minor_unit ?? 2);
       const range = p.prices.price_range;
       return [dec(p.name), p.categories[0]?.name || "Sportausrüstung", (range ? +range.min_amount : +p.prices.price) / div,
         variantText(p.attributes), p.permalink, p.images?.[0]?.src || "", range && range.min_amount !== range.max_amount ? 1 : 0];
     });
+    if (JSON.stringify(state.products) === before) return;
     if (panes.shop) panes.shop.dirty = true;
     if (current() === "shop") render();
   } catch (e) { /* Datenstand aus inhalte.json bleibt */ }
+}
+
+/* ---------- Automatisch aktualisieren ----------
+   - beim Start
+   - wenn die App nach mehr als 5 Minuten wieder in den Vordergrund kommt
+   - solange sie offen ist: alle 2 Minuten, wenn heute eine unserer Mannschaften spielt,
+     sonst alle 15 Minuten
+   Neu gezeichnet wird nur, wenn sich tatsächlich etwas geändert hat. */
+let lastLoad = 0, refreshing = false;
+function stamp() { document.getElementById("src").textContent = "Aktualisiert " + fTime(new Date()); }
+function matchToday() {
+  const n = new Date().toDateString();
+  return [...HERREN, ...S.jugend.filter(j => j.bfvTeam).map(j => j.id)].some(t => matches(t).some(m => m.d.toDateString() === n));
+}
+async function reloadContent() {
+  try {
+    const fresh = isEditor() ? (await ghReadData()).data : await getJSON("daten/inhalte.json?v=" + Date.now().toString(36), 8000);
+    if (JSON.stringify(fresh) === JSON.stringify(S)) return;
+    S = fresh; invalidate(); render();
+  } catch (e) { /* alter Stand bleibt */ }
+}
+async function refreshAll() {
+  if (refreshing || !S) return;
+  refreshing = true; lastLoad = Date.now();
+  const { detail } = route();
+  const editing = !document.getElementById("sheet").hidden && detail && detail.startsWith("red");
+  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), editing ? null : reloadContent()]);
+  refreshing = false;
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && Date.now() - lastLoad > 5 * 60e3) refreshAll();
+});
+setInterval(() => {
+  if (!S || document.visibilityState !== "visible") return;
+  const every = matchToday() ? 2 * 60e3 : 15 * 60e3;
+  if (Date.now() - lastLoad >= every) refreshAll();
+}, 30e3);
+
+/* ---------- Seiten der Homepage live übernehmen (z. B. Leitbild) ----------
+   Der Inhalt kommt direkt aus WordPress und wird für die App bereinigt:
+   nur Text, Überschriften, Listen, Links und Bilder bleiben, alles andere fällt weg.
+   Abschnitte („Timeline“-Blöcke) werden zu aufklappbaren Karten. */
+const WP_PAGES = { leitbild: { id: 2126, slug: "leitbild", title: "Leitbild", intro: "Jugendkonzept der SpVgg Pfreimd, Abteilung Fußball." } };
+const wpLoaded = {};
+const KEEP = { P: "p", BR: "br", STRONG: "strong", B: "strong", EM: "em", I: "em", U: "u", A: "a", UL: "ul", OL: "ol", LI: "li",
+  H1: "h3", H2: "h3", H3: "h3", H4: "h4", H5: "h4", H6: "h4", BLOCKQUOTE: "blockquote", FIGURE: "figure", FIGCAPTION: "figcaption", IMG: "img", HR: "hr" };
+function cleanNode(node) {
+  let s = "";
+  for (const c of node.childNodes) {
+    if (c.nodeType === 3) { s += esc(c.textContent); continue; }
+    if (c.nodeType !== 1) continue;
+    const tag = KEEP[c.tagName];
+    if (!tag) { s += cleanNode(c); continue; }
+    if (tag === "img") {
+      const src = c.getAttribute("src") || "";
+      if (/^https:\/\//.test(src)) s += `<img src="${esc(src)}" alt="${esc(c.getAttribute("alt") || "")}" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">`;
+      continue;
+    }
+    if (tag === "br" || tag === "hr") { s += `<${tag}>`; continue; }
+    if (tag === "a") {
+      const h = c.getAttribute("href") || "";
+      s += /^(https?:|mailto:)/i.test(h) ? `<a href="${esc(h)}" target="_blank" rel="noopener">${cleanNode(c)}</a>` : cleanNode(c);
+      continue;
+    }
+    if (tag === "p") {
+      const txt = c.textContent.replace(/\u00a0/g, " ").trim();
+      if (!txt && !c.querySelector("img")) continue;
+      if (/^[_\-–—\s]{3,}$/.test(txt)) { s += "<hr>"; continue; }
+      const strong = c.querySelector("strong,b");
+      if (strong && strong.textContent.replace(/\u00a0/g, " ").trim() === txt) { s += `<h4>${esc(txt)}</h4>`; continue; }
+    }
+    s += `<${tag}>${cleanNode(c)}</${tag}>`;
+  }
+  return s;
+}
+function cleanWp(raw) {
+  const doc = new DOMParser().parseFromString(raw, "text/html");
+  doc.querySelectorAll("style,script,noscript,iframe,form,svg,input,button,select,textarea").forEach(x => x.remove());
+  const out = []; let first = true;
+  for (const c of doc.body.children) {
+    const items = c.querySelectorAll(".wp-block-cp-timeline-content-timeline-child");
+    if (!items.length) { out.push(cleanNode(c)); continue; }
+    for (const it of items) {
+      /* „Verhaltens-<br>grundsätze“ → „Verhaltensgrundsätze“ (ohne fremdes HTML auszuführen) */
+      const timeHtml = (it.querySelector(".story-time")?.innerHTML || "").replace(/-((?:\s*<\/[a-z]+>)*)\s*<br\s*\/?>/gi, "$1").replace(/<br\s*\/?>/gi, " ");
+      const title = new DOMParser().parseFromString(timeHtml, "text/html").body.textContent.replace(/\s+/g, " ").trim() || "Abschnitt";
+      out.push(`<details class="card wpsec"${first ? " open" : ""}><summary>${esc(title)}</summary><div class="wpbody">${cleanNode(it.querySelector(".story-content") || it)}</div></details>`);
+      first = false;
+    }
+  }
+  return out.join("");
+}
+function wpSheet(key) {
+  const pg = WP_PAGES[key];
+  let html = "";
+  try { html = localStorage.getItem("spvgg-seite-" + pg.id) || ""; } catch (e) {}
+  if (!wpLoaded[pg.id]) setTimeout(() => loadWpPage(pg), 0);
+  return `<h2 id="sheet-title">${esc(pg.title)}</h2>${pg.intro ? `<p class="muted">${esc(pg.intro)}</p>` : ""}
+    <div id="wp-${pg.id}" class="wpc">${html || `<p class="note">Wird geladen …</p>`}</div>
+    <div><a class="btn ghost" href="${SITE}/${pg.slug}/" target="_blank" rel="noopener">Auf der Homepage ansehen ↗</a></div>`;
+}
+async function loadWpPage(pg) {
+  const el = () => document.getElementById("wp-" + pg.id);
+  try {
+    const j = await getJSON(`${SITE}/wp-json/wp/v2/pages/${pg.id}?_fields=content`, 10000);
+    const html = cleanWp(j.content.rendered);
+    wpLoaded[pg.id] = true;
+    try { localStorage.setItem("spvgg-seite-" + pg.id, html); } catch (e) {}
+    const box = el();
+    if (box && box.innerHTML !== html) {
+      const open = [...box.querySelectorAll("details")].map(d => d.open);
+      box.innerHTML = html;
+      if (open.length) box.querySelectorAll("details").forEach((d, i) => { if (i < open.length) d.open = open[i]; });
+    }
+  } catch (e) {
+    const box = el();
+    if (box && box.querySelector(".note")) box.innerHTML = `<p class="note">Die Seite konnte gerade nicht geladen werden. Bitte später noch einmal versuchen oder auf der Homepage ansehen.</p>`;
+  }
 }
 
 /* ---------- Start ---------- */
@@ -823,6 +947,7 @@ async function start() {
   const [, m, d] = S.stand.split("-");
   document.getElementById("src").textContent = `Stand ${d}.${m}.`;
   applyRoute();
+  lastLoad = Date.now();
   loadLive();
   loadShop();
   loadYouth();
