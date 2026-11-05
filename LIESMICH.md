@@ -18,7 +18,19 @@ Sie läuft im Browser und lässt sich auf jedem Handy wie eine App auf den Start
 Die Shop-Artikel kommen live aus dem WooCommerce-Shop der Homepage.
 Klappt das einmal nicht, zeigt die App den letzten Datenstand aus `daten/inhalte.json`.
 
-## Häufige Handgriffe
+## Redaktion in der App (am bequemsten)
+
+News, Termine und die Stadionzeitung lassen sich direkt in der App bearbeiten: **Mehr → Redaktion**.
+Die App speichert dabei in dieses Repository – jede Änderung erscheint unter **Commits** mit dem Zusatz
+„(über die App)“ und lässt sich dort zurücknehmen. Fotos landen in `img/news/`, hochgeladene Stadionzeitungen in `zeitung/`.
+
+Zum Anmelden braucht die App einen persönlichen GitHub-Zugangsschlüssel (Fine-grained token), der nur
+dieses Repository ändern darf: [neuen Schlüssel anlegen](https://github.com/settings/personal-access-tokens/new),
+bei „Repository access“ nur `App` auswählen und unter „Repository permissions“ bei **Contents** „Read and write“ wählen.
+Der Schlüssel bleibt nur auf dem eigenen Handy gespeichert. Läuft er ab oder geht ein Handy verloren:
+Schlüssel bei GitHub löschen und einen neuen anlegen.
+
+## Häufige Handgriffe (direkt auf github.com)
 
 Alle Änderungen gehen direkt auf github.com: Datei anklicken, oben rechts auf den **Stift** tippen,
 ändern und unten auf **Commit changes** tippen. Nach etwa einer Minute ist die Änderung in der App sichtbar.

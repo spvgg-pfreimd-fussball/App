@@ -192,8 +192,9 @@ function viewNews() {
   const yList = ySoon.length ? ySoon : yPast;
   const youthBlock = yList.length ? `<section class="sec"><h2 class="h">${ySoon.length ? "Jugend diese Woche" : "Jugend: letzte Ergebnisse"} <a href="#teams" data-group="jugend">Alle Teams</a></h2>
     <div class="card rows">${yList.slice(0, 8).map(([t, m]) => matchRow(t, m, true)).join("")}</div></section>` : "";
+  const ed = isEditor();
   const evs = S.events.filter(e => toDate(e.d) >= today());
-  const events = evs.length ? `<section class="sec"><h2 class="h">Termine</h2><div class="events">${evs.map(e => { const d = toDate(e.d);
+  const events = evs.length || ed ? `<section class="sec"><h2 class="h">Termine ${ed ? `<a href="#news/red-termin-neu">+ Neuer Termin</a>` : ""}</h2><div class="events">${evs.map(e => { const d = toDate(e.d);
       return `<div class="card ev"><div class="cal"><i>${MON[d.getMonth()]}</i><b class="tabnum">${d.getDate()}</b></div><span>${esc(e.t)}</span></div>`; }).join("")}</div></section>` : "";
   const z = S.zeitung[0];
   return `${hero}
@@ -201,13 +202,13 @@ function viewNews() {
     <section class="sec"><h2 class="h">Letzte Ergebnisse <a href="#spiele">Alle Spiele</a></h2><div class="card rows">${results}</div></section>
     ${youthBlock}
     ${events}
-    <section class="sec"><h2 class="h">Stadionzeitung</h2>
+    <section class="sec"><h2 class="h">Stadionzeitung ${ed ? `<a href="#news/red">Bearbeiten</a>` : ""}</h2>
       <a class="card paper" href="${abs(z[2])}" target="_blank" rel="noopener"><span class="ic">PDF</span><span><span class="muted" style="font-size:13px">Ausgabe vom ${z[0]}</span><b>Heimspiel gegen ${esc(z[1])}</b></span><span class="go" aria-hidden="true">↗</span></a>
     </section>
-    <section class="sec"><h2 class="h">Neuigkeiten</h2><div class="news">
-      ${S.news.map((n, i) => `<button class="card nc" data-news="${i}">
-        <img class="img" src="${abs(n.img)}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">
-        <div class="tx"><span class="date">${esc(n.d)}</span><h3>${esc(n.t)}</h3><p>${esc(n.p[0])}</p></div></button>`).join("")}
+    <section class="sec"><h2 class="h">Neuigkeiten ${ed ? `<a href="#news/red-news-neu">+ Neue News</a>` : ""}</h2><div class="news">
+      ${S.news.map((n, i) => n.entwurf && !ed ? "" : `<button class="card nc" data-news="${i}">
+        ${n.img ? `<img class="img" src="${esc(abs(n.img))}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}
+        <div class="tx"><span class="date">${esc(n.d)}${n.entwurf ? ` · <b class="draft">Entwurf</b>` : ""}</span><h3>${esc(n.t)}</h3><p>${esc(n.p[0] || "")}</p></div></button>`).join("")}
     </div></section>`;
 }
 
@@ -315,8 +316,11 @@ function viewMehr() {
       ${L("Mitglied werden", "https://www.spvgg-pfreimd.de/beitritt1.pdf", "Beitrittserklärung als PDF")}
       ${L("Jugendfußball", "https://jugendfussball.spvgg-pfreimd.de/", "Homepage der Jugend")}
     </div></section>
+    <section class="sec"><h2 class="h">Redaktion</h2><div class="card list">${isEditor()
+      ? `<a class="li" href="#mehr/red"><span>News, Termine & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
+      : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.6</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.7</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -347,11 +351,14 @@ function closeSheet() {
   s.hidden = true; document.body.style.overflow = "";
   lastFocus?.focus?.({ preventScroll: true });
 }
+const linkify = t => esc(t).replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)]/g, u => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
 function openNews(i) {
   const n = S.news[i];
-  openSheet(`<span class="date">${esc(n.d)}</span><h2 id="sheet-title">${esc(n.t)}</h2>
-    <img class="hero" src="${abs(n.img)}" alt="" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">
-    ${n.p.map(p => `<p>${esc(p)}</p>`).join("")}`);
+  if (n.entwurf && !isEditor()) return closeSheet();
+  openSheet(`<span class="date">${esc(n.d)}${n.entwurf ? ` · <b class="draft">Entwurf</b>` : ""}</span><h2 id="sheet-title">${esc(n.t)}</h2>
+    ${n.img ? `<img class="hero" src="${esc(abs(n.img))}" alt="" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}
+    ${n.p.map(p => `<p class="pre">${linkify(p)}</p>`).join("")}
+    ${isEditor() ? `<div><a class="btn ghost" href="#news/red-news-${i}">Diese News bearbeiten</a></div>` : ""}`);
 }
 
 /* ---------- Navigation ----------
@@ -407,7 +414,11 @@ function applyRoute() {
     window.scrollTo(0, freshNav ? 0 : (scrollPos[view] || 0));
   }
   freshNav = false;
-  if (detail !== null && view === "news" && S.news[+detail]) openNews(+detail);
+  if (detail !== null && detail.startsWith("red")) {
+    Object.assign(red, { img: null, imgRemoved: false, pdf: null });
+    openSheet(redSheet(detail));
+  }
+  else if (detail !== null && view === "news" && S.news[+detail]) openNews(+detail);
   else if (detail !== null && view === "teams" && youth(detail)) openSheet(youthSheet(detail));
   else if (detail !== null && SHEETS[detail]) openSheet(SHEETS[detail]());
   else closeSheet();
@@ -439,6 +450,8 @@ document.addEventListener("click", e => {
     if (link.getAttribute("href") === "#" + current() && !route().detail) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }
     return;
   }
+  const rb = e.target.closest("[data-red]");
+  if (rb) { redAction(rb); return; }
   const b = e.target.closest("[data-team],[data-mode],[data-cat],[data-group],[data-news],[data-sheet],[data-go-team],[data-copy]");
   if (!b) return;
   const d = b.dataset;
@@ -462,6 +475,311 @@ document.addEventListener("click", e => {
 function selectText(id) { const r = document.createRange(); r.selectNodeContents(document.getElementById(id)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 document.getElementById("back").addEventListener("click", goBack);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !document.getElementById("sheet").hidden) goBack(); });
+
+/* ---------- Redaktion: News, Termine und Stadionzeitung am Handy bearbeiten ----------
+   Gespeichert wird direkt im GitHub-Repository (daten/inhalte.json, Fotos in img/news/,
+   Stadionzeitungen in zeitung/). Jede Änderung ist ein eigener Eintrag in der
+   Versionsgeschichte und lässt sich dort zurücknehmen.
+   Anmeldung: persönlicher GitHub-Zugangsschlüssel, der nur dieses Repository ändern darf.
+   Er wird nur auf dem eigenen Handy gespeichert. */
+const GH = { owner: "spvgg-pfreimd-fussball", repo: "App", branch: "main", file: "daten/inhalte.json" };
+const GH_API = `https://api.github.com/repos/${GH.owner}/${GH.repo}`;
+const TOKEN_KEY = "spvgg-redaktion";
+const getToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } };
+const isEditor = () => !!getToken();
+const red = { img: null, imgRemoved: false, pdf: null, busy: false };
+
+async function gh(path, opts = {}, token = getToken()) {
+  const headers = { Accept: "application/vnd.github+json", Authorization: "Bearer " + token };
+  if (opts.body) headers["Content-Type"] = "application/json";
+  const r = await fetch(GH_API + path, { ...opts, headers, cache: "no-store" });
+  if (!r.ok) { const e = new Error("GitHub " + r.status); e.status = r.status; throw e; }
+  return r.json();
+}
+const toB64 = bytes => { let s = ""; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); };
+const b64ToText = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, "")), c => c.charCodeAt(0)));
+
+/* inhalte.json immer im selben, gut lesbaren Format schreiben (ein Eintrag pro Zeile) */
+function formatData(d) {
+  const J = x => Array.isArray(x) ? "[" + x.map(J).join(", ") + "]"
+    : x && typeof x === "object" ? "{" + Object.entries(x).map(([k, v]) => JSON.stringify(k) + ": " + J(v)).join(", ") + "}"
+    : JSON.stringify(x);
+  const lst = a => "[\n" + a.map(i => "    " + J(i)).join(",\n") + "\n  ]";
+  const news = n => {
+    const { p = [], ...head } = n;
+    const h = Object.entries(head).map(([k, v]) => JSON.stringify(k) + ": " + J(v)).join(", ");
+    return `    {${h},\n      "p": [\n${p.map(x => "        " + J(x)).join(",\n")}\n      ]}`;
+  };
+  const fmt = {
+    news: v => "[\n" + v.map(news).join(",\n") + "\n  ]",
+    fupa: v => "{\n" + Object.entries(v).map(([t, x]) => `    ${J(t)}: {"liga": ${J(x.liga)},\n      "tab": [\n${x.tab.map(r => "        " + J(r)).join(",\n")}\n      ],\n      "sp": [\n${x.sp.map(r => "        " + J(r)).join(",\n")}\n      ]}`).join(",\n") + "\n  }",
+    sparte: v => "[\n" + v.map(([g, rows]) => `    [${J(g)}, [\n${rows.map(r => "      " + J(r)).join(",\n")}\n    ]]`).join(",\n") + "\n  ]"
+  };
+  const order = ["news", "events", "zeitung", "teams", "jugend", "sparte", "historie", "products", "fupa"];
+  const keys = [...order.filter(k => k in d), ...Object.keys(d).filter(k => k !== "stand" && !order.includes(k))];
+  return "{\n" + `  "stand": ${J(d.stand)},\n` + keys.map(k => `  ${J(k)}: ${(fmt[k] || (Array.isArray(d[k]) ? lst : J))(d[k])}`).join(",\n\n") + "\n}\n";
+}
+
+async function ghReadData() {
+  const f = await gh(`/contents/${GH.file}?ref=${GH.branch}`);
+  return { data: JSON.parse(b64ToText(f.content)), sha: f.sha };
+}
+/* Liest den aktuellen Stand, wendet die Änderung an und speichert (bei gleichzeitiger Änderung: ein zweiter Versuch) */
+async function saveData(change, message) {
+  for (let attempt = 0; ; attempt++) {
+    const { data, sha } = await ghReadData();
+    change(data);
+    try {
+      await gh(`/contents/${GH.file}`, { method: "PUT", body: JSON.stringify({ message: message + " (über die App)", content: toB64(new TextEncoder().encode(formatData(data))), sha, branch: GH.branch }) });
+      S = data; invalidate(); render();
+      return;
+    } catch (e) { if (attempt || (e.status !== 409 && e.status !== 422)) throw e; }
+  }
+}
+async function ghUpload(path, bytes, message) {
+  let sha;
+  try { sha = (await gh(`/contents/${path}?ref=${GH.branch}`)).sha; } catch (e) { /* neue Datei */ }
+  await gh(`/contents/${path}`, { method: "PUT", body: JSON.stringify({ message: message + " (über die App)", content: toB64(bytes), branch: GH.branch, ...(sha ? { sha } : {}) }) });
+  return path;
+}
+async function shrinkImage(file, max = 1400) {
+  let src;
+  try { src = await createImageBitmap(file); }
+  catch (e) { src = await new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = URL.createObjectURL(file); }); }
+  const w = src.width, h = src.height, sc = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement("canvas"); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+  c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+  const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.82));
+  return new Uint8Array(await blob.arrayBuffer());
+}
+const slug = s => String(s).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+  .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "eintrag";
+const isoDate = d => `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
+const MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+const longDate = d => `${d.getDate()}. ${MONATE[d.getMonth()]} ${d.getFullYear()}`;
+const deToIso = s => { const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(s || ""); return m ? `${m[3]}-${two(m[2])}-${two(m[1])}` : ""; };
+const isoToDe = s => { const [y, m, d] = (s || "").split("-"); return y ? `${d}.${m}.${y}` : ""; };
+function errText(e) {
+  if (e.status === 401) return "Der Zugangsschlüssel ist ungültig oder abgelaufen. Bitte unter Mehr → Redaktion abmelden und neu anmelden.";
+  if (e.status === 403 || e.status === 404) return "Der Zugangsschlüssel darf das Repository nicht ändern. Bei GitHub muss unter „Contents“ „Read and write“ ausgewählt sein.";
+  if (e.status === 409 || e.status === 422) return "Die Daten wurden gerade woanders geändert. Bitte noch einmal speichern.";
+  if (e.name === "TypeError") return "Keine Verbindung zu GitHub. Bitte Internetverbindung prüfen und noch einmal speichern.";
+  return e.message || "Speichern hat nicht geklappt.";
+}
+function toast(text) {
+  let t = document.getElementById("toast");
+  if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; t.setAttribute("role", "status"); document.body.append(t); }
+  t.textContent = text; t.hidden = false;
+  clearTimeout(t._h); t._h = setTimeout(() => { t.hidden = true; }, 4500);
+}
+/* Eintrag im frisch geladenen Stand wiederfinden (falls sich die Reihenfolge geändert hat) */
+function findIdx(arr, orig, idx, key) {
+  let i = arr.findIndex(x => key(x) === key(orig));
+  if (i < 0 && arr[+idx] && key(arr[+idx]) === key(orig)) i = +idx;
+  if (i < 0) throw new Error("Der Eintrag wurde inzwischen geändert. Bitte zurückgehen und neu öffnen.");
+  return i;
+}
+const newsKey = n => n.t + "|" + n.d, evKey = e => e.d + "|" + e.t, zKey = z => z[0] + "|" + z[1];
+
+/* --- Ansichten der Redaktion --- */
+function redSheet(key) {
+  if (key === "red-login" || !isEditor()) return redLogin();
+  const [, kind, idx] = key.split("-");
+  if (!kind) return redHome();
+  if (kind === "news") return redNewsForm(idx);
+  if (kind === "termin") return redTerminForm(idx);
+  if (kind === "zeitung") return redZeitungForm(idx);
+  return redHome();
+}
+function redLogin() {
+  return `<h2 id="sheet-title">Redaktion</h2>
+    <p>Hier meldest du dich einmalig mit deinem GitHub-Zugangsschlüssel an. Danach kannst du News, Termine und die Stadionzeitung direkt am Handy bearbeiten.</p>
+    <form id="loginform" class="form" autocomplete="off">
+      <label for="tok">Zugangsschlüssel<input id="tok" type="password" required spellcheck="false" autocapitalize="off" placeholder="github_pat_…"></label>
+      <div class="formbtns"><button class="btn" type="submit">Anmelden</button></div>
+      <p id="f-msg" class="formmsg" role="alert"></p>
+    </form>
+    <p class="muted" style="font-size:14px">Der Schlüssel bleibt nur auf diesem Gerät gespeichert. Einen neuen Schlüssel legst du bei GitHub unter <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">Einstellungen → Personal access tokens</a> an.</p>`;
+}
+function redHome() {
+  const base = current();
+  const L = (href, title, sub) => `<a class="li" href="#${base}/${href}"><span>${esc(title)}<small>${esc(sub)}</small></span><span class="chev" aria-hidden="true">›</span></a>`;
+  return `<h2 id="sheet-title">Redaktion</h2>
+    <p class="muted">Änderungen sind nach etwa ein bis zwei Minuten für alle sichtbar. Jede Änderung wird als eigene Version gespeichert.</p>
+    <section class="sec"><h3 class="h">News <a href="#${base}/red-news-neu">+ Neue News</a></h3>
+      <div class="card list">${S.news.map((n, i) => L(`red-news-${i}`, n.t, n.d + (n.entwurf ? " · Entwurf" : ""))).join("") || `<p class="li muted">Noch keine News.</p>`}</div></section>
+    <section class="sec"><h3 class="h">Termine <a href="#${base}/red-termin-neu">+ Neuer Termin</a></h3>
+      <div class="card list">${S.events.map((e, i) => L(`red-termin-${i}`, e.t, isoToDe(e.d) + (toDate(e.d) < today() ? " · vorbei" : ""))).join("") || `<p class="li muted">Noch keine Termine.</p>`}</div></section>
+    <section class="sec"><h3 class="h">Stadionzeitung <a href="#${base}/red-zeitung-neu">+ Neue Ausgabe</a></h3>
+      <div class="card list">${S.zeitung.map((z, i) => L(`red-zeitung-${i}`, z[1], z[0] + (i === 0 ? " · aktuelle Ausgabe" : ""))).join("")}</div></section>
+    <div><button class="btn ghost" type="button" data-red="logout">Abmelden</button></div>`;
+}
+function delBtns(isNew, extra = "") {
+  return isNew ? "" : `<div class="formbtns">${extra}<button class="btn danger" type="button" data-red="delete">Löschen</button></div>`;
+}
+function redNewsForm(idx) {
+  const n = idx === "neu" ? null : S.news[+idx];
+  if (idx !== "neu" && !n) return redHome();
+  const img = n?.img ? abs(n.img) : "";
+  return `<h2 id="sheet-title">${n ? "News bearbeiten" : "Neue News"}</h2>
+    <form id="redform" class="form" data-kind="news" data-idx="${esc(idx)}">
+      <label for="f-t">Überschrift<input id="f-t" required value="${esc(n?.t || "")}"></label>
+      <label for="f-d">Datum<input id="f-d" required value="${esc(n?.d || longDate(new Date()))}"><small class="hint">So erscheint es in der App, z. B. „${longDate(new Date())}“ oder „Mai 2026“.</small></label>
+      <label for="f-p">Text<textarea id="f-p" rows="10">${esc((n?.p || []).join("\n\n"))}</textarea><small class="hint">Eine Leerzeile beginnt einen neuen Absatz.</small></label>
+      <div class="field"><span class="flabel">Foto</span>
+        <img id="f-prev" class="prev" src="${esc(img)}" alt="" ${img ? "" : "hidden"}>
+        <div class="formbtns">
+          <label class="btn ghost filebtn">${img ? "Anderes Foto" : "Foto wählen"}<input id="f-img" class="vh" type="file" accept="image/*"></label>
+          <button class="btn ghost" type="button" data-red="img-remove" ${img ? "" : "hidden"}>Foto entfernen</button>
+        </div></div>
+      <label class="check"><input id="f-draft" type="checkbox" ${n?.entwurf ? "checked" : ""}> Als Entwurf speichern (nur für dich sichtbar)</label>
+      <div class="formbtns"><button class="btn" type="submit">Speichern</button></div>
+      <p id="f-msg" class="formmsg" role="alert"></p>
+      ${delBtns(!n, `<button class="btn ghost" type="button" data-red="up" ${+idx === 0 ? "disabled" : ""}>Nach oben</button><button class="btn ghost" type="button" data-red="down" ${+idx === S.news.length - 1 ? "disabled" : ""}>Nach unten</button>`)}
+    </form>`;
+}
+function redTerminForm(idx) {
+  const e = idx === "neu" ? null : S.events[+idx];
+  if (idx !== "neu" && !e) return redHome();
+  return `<h2 id="sheet-title">${e ? "Termin bearbeiten" : "Neuer Termin"}</h2>
+    <form id="redform" class="form" data-kind="termin" data-idx="${esc(idx)}">
+      <label for="f-date">Datum<input id="f-date" type="date" required value="${esc(e?.d || "")}"></label>
+      <label for="f-t">Bezeichnung<input id="f-t" required value="${esc(e?.t || "")}" placeholder="z. B. Christbaumversteigerung"></label>
+      <p class="hint">Vergangene Termine blendet die App automatisch aus.</p>
+      <div class="formbtns"><button class="btn" type="submit">Speichern</button></div>
+      <p id="f-msg" class="formmsg" role="alert"></p>
+      ${delBtns(!e)}
+    </form>`;
+}
+function redZeitungForm(idx) {
+  const z = idx === "neu" ? null : S.zeitung[+idx];
+  if (idx !== "neu" && !z) return redHome();
+  return `<h2 id="sheet-title">${z ? "Ausgabe bearbeiten" : "Neue Stadionzeitung"}</h2>
+    <form id="redform" class="form" data-kind="zeitung" data-idx="${esc(idx)}">
+      <label for="f-date">Datum des Heimspiels<input id="f-date" type="date" required value="${esc(deToIso(z?.[0]))}"></label>
+      <label for="f-t">Gegner<input id="f-t" required value="${esc(z?.[1] || "")}" placeholder="z. B. Hahnbach"></label>
+      <div class="field"><span class="flabel">PDF</span>
+        ${z ? `<a class="hint" href="${abs(z[2])}" target="_blank" rel="noopener">Aktuelle Datei öffnen ↗</a>` : ""}
+        <div class="formbtns"><label class="btn ghost filebtn">PDF hochladen<input id="f-pdf" class="vh" type="file" accept="application/pdf"></label></div>
+        <span id="f-pdfname" class="hint"></span>
+      </div>
+      <label for="f-link">… oder Link zur Datei<input id="f-link" type="url" inputmode="url" value="${z && /^https?:/.test(z[2]) ? esc(z[2]) : ""}" placeholder="https://fussball.spvgg-pfreimd.de/…pdf"><small class="hint">Zum Beispiel, wenn die Ausgabe schon auf der Homepage liegt.</small></label>
+      <div class="formbtns"><button class="btn" type="submit">Speichern</button></div>
+      <p id="f-msg" class="formmsg" role="alert"></p>
+      ${delBtns(!z)}
+    </form>`;
+}
+
+/* --- Speichern --- */
+async function saveForm(form) {
+  if (red.busy) return;
+  const kind = form.dataset.kind, idx = form.dataset.idx, isNew = idx === "neu";
+  const msg = form.querySelector("#f-msg"), btn = form.querySelector("[type=submit]");
+  const v = id => (form.querySelector("#" + id)?.value || "").trim();
+  red.busy = true; btn.disabled = true; btn.textContent = "Wird gespeichert …"; msg.textContent = "";
+  try {
+    if (kind === "news") {
+      const orig = isNew ? null : S.news[+idx];
+      const item = { d: v("f-d"), t: v("f-t"), img: red.imgRemoved ? "" : (orig?.img || ""),
+        p: v("f-p").split(/\n\s*\n/).map(x => x.trim()).filter(Boolean) };
+      if (form.querySelector("#f-draft").checked) item.entwurf = true;
+      if (red.img) item.img = await ghUpload(`img/news/${isoDate(new Date())}-${slug(item.t)}-${Date.now().toString(36)}.jpg`, red.img, `Foto für News „${item.t}“`);
+      await saveData(d => { if (isNew) d.news.unshift(item); else d.news[findIdx(d.news, orig, idx, newsKey)] = item; },
+        `${isNew ? "Neue News" : "News geändert"}: ${item.t}`);
+    } else if (kind === "termin") {
+      const orig = isNew ? null : S.events[+idx];
+      const item = { d: v("f-date"), t: v("f-t") };
+      await saveData(d => {
+        if (isNew) d.events.push(item); else d.events[findIdx(d.events, orig, idx, evKey)] = item;
+        d.events.sort((a, b) => a.d.localeCompare(b.d));
+      }, `${isNew ? "Neuer Termin" : "Termin geändert"}: ${item.t}`);
+    } else if (kind === "zeitung") {
+      const orig = isNew ? null : S.zeitung[+idx];
+      const iso = v("f-date"), gegner = v("f-t");
+      let url = v("f-link") || orig?.[2] || "";
+      if (red.pdf) url = await ghUpload(`zeitung/${iso}-${slug(gegner)}.pdf`, red.pdf, `Stadionzeitung ${gegner}`);
+      if (!url) throw new Error("Bitte ein PDF hochladen oder einen Link angeben.");
+      const item = [isoToDe(iso), gegner, url];
+      await saveData(d => {
+        if (isNew) d.zeitung.unshift(item); else d.zeitung[findIdx(d.zeitung, orig, idx, zKey)] = item;
+        d.zeitung.sort((a, b) => deToIso(b[0]).localeCompare(deToIso(a[0])));
+      }, `${isNew ? "Neue Stadionzeitung" : "Stadionzeitung geändert"}: ${gegner}`);
+    }
+    goBack();
+    toast("Gespeichert. In ein bis zwei Minuten für alle sichtbar.");
+  } catch (e) {
+    msg.textContent = errText(e); btn.disabled = false; btn.textContent = "Speichern";
+  } finally { red.busy = false; }
+}
+async function redAction(b) {
+  const a = b.dataset.red, form = b.closest("form");
+  if (a === "logout") {
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+    invalidate(); render(); goBack(); toast("Abgemeldet."); return;
+  }
+  if (a === "img-remove") {
+    red.img = null; red.imgRemoved = true;
+    const prev = document.getElementById("f-prev"); prev.hidden = true; prev.removeAttribute("src");
+    b.hidden = true; return;
+  }
+  if (!form || red.busy) return;
+  const kind = form.dataset.kind, idx = form.dataset.idx, msg = form.querySelector("#f-msg");
+  const list = { news: "news", termin: "events", zeitung: "zeitung" }[kind];
+  const key = { news: newsKey, termin: evKey, zeitung: zKey }[kind];
+  const orig = S[list][+idx];
+  if (a === "delete" && !b.dataset.armed) {
+    b.dataset.armed = "1"; b.textContent = "Wirklich löschen? Nochmal tippen";
+    setTimeout(() => { delete b.dataset.armed; b.textContent = "Löschen"; }, 4000); return;
+  }
+  red.busy = true; b.disabled = true; msg.textContent = "Wird gespeichert …";
+  try {
+    const label = kind === "zeitung" ? orig[1] : orig.t;
+    if (a === "delete") await saveData(d => d[list].splice(findIdx(d[list], orig, idx, key), 1), `Gelöscht: ${label}`);
+    else {
+      const dir = a === "up" ? -1 : 1;
+      await saveData(d => { const i = findIdx(d[list], orig, idx, key), j = i + dir;
+        if (j < 0 || j >= d[list].length) return; [d[list][i], d[list][j]] = [d[list][j], d[list][i]]; }, `Verschoben: ${label}`);
+    }
+    goBack();
+    toast(a === "delete" ? "Gelöscht. In ein bis zwei Minuten für alle sichtbar." : "Verschoben. In ein bis zwei Minuten für alle sichtbar.");
+  } catch (e) { msg.textContent = errText(e); b.disabled = false; }
+  finally { red.busy = false; }
+}
+document.addEventListener("submit", async e => {
+  if (e.target.id === "redform") { e.preventDefault(); saveForm(e.target); }
+  if (e.target.id === "loginform") {
+    e.preventDefault();
+    const tok = e.target.querySelector("#tok").value.trim(), msg = e.target.querySelector("#f-msg"), btn = e.target.querySelector("[type=submit]");
+    btn.disabled = true; btn.textContent = "Wird geprüft …"; msg.textContent = "";
+    try {
+      await gh("", {}, tok);
+      try { localStorage.setItem(TOKEN_KEY, tok); } catch (err) { throw new Error("Der Schlüssel konnte auf diesem Gerät nicht gespeichert werden (privater Modus?)."); }
+      S = (await ghReadData()).data; invalidate(); render();
+      location.replace("#" + current() + "/red");
+      toast("Angemeldet.");
+    } catch (err) {
+      msg.textContent = err.status === 401 ? "Dieser Schlüssel ist ungültig oder abgelaufen." : err.status === 404 ? "Der Schlüssel hat keinen Zugriff auf das Repository „App“." : errText(err);
+      btn.disabled = false; btn.textContent = "Anmelden";
+    }
+  }
+});
+document.addEventListener("change", async e => {
+  if (e.target.id === "f-img" && e.target.files[0]) {
+    const msg = document.getElementById("f-msg");
+    try {
+      red.img = await shrinkImage(e.target.files[0]); red.imgRemoved = false;
+      const prev = document.getElementById("f-prev");
+      prev.src = URL.createObjectURL(new Blob([red.img], { type: "image/jpeg" })); prev.hidden = false; prev.removeAttribute("data-wait");
+      document.querySelector('[data-red="img-remove"]').hidden = false;
+    } catch (err) { msg.textContent = "Dieses Foto konnte nicht gelesen werden. Bitte ein anderes wählen."; }
+  }
+  if (e.target.id === "f-pdf" && e.target.files[0]) {
+    const f = e.target.files[0];
+    if (f.size > 40 * 1024 * 1024) { document.getElementById("f-msg").textContent = "Die Datei ist größer als 40 MB. Bitte verkleinern oder als Link angeben."; return; }
+    red.pdf = new Uint8Array(await f.arrayBuffer());
+    document.getElementById("f-pdfname").textContent = `${f.name} (${(f.size / 1048576).toFixed(1)} MB) wird beim Speichern hochgeladen.`;
+  }
+});
 
 /* ---------- Shop live aus WooCommerce ---------- */
 function variantText(attrs) {
@@ -494,7 +812,8 @@ async function loadShop() {
 /* ---------- Start ---------- */
 async function start() {
   try {
-    S = await getJSON("daten/inhalte.json?v=" + Date.now().toString(36).slice(0, -3), 8000);
+    if (isEditor()) { try { S = (await ghReadData()).data; } catch (e) { S = null; } }
+    if (!S) S = await getJSON("daten/inhalte.json?v=" + Date.now().toString(36).slice(0, -3), 8000);
   } catch (e) {
     document.getElementById("view").innerHTML = `<p class="note">Die Inhalte konnten nicht geladen werden. Bitte prüfe deine Internetverbindung und lade die Seite neu.</p>`;
     return;
