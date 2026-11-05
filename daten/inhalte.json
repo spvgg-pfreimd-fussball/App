@@ -88,6 +88,19 @@
     {"id": "ah", "name": "Alte Herren", "liga": "Freundschaftsspiele, kein Ligabetrieb", "img": "/wp-content/uploads/2023/10/Alte_Herren-1-1024x568.png", "staff": []}
   ],
 
+  "jugend": [
+    {"id": "a", "name": "A-Junioren", "alter": "U19", "seite": "a-junioren", "page": 2071, "liga": "U19 (A-Jun) CHA/SAD KL-Quali", "bfvTeam": "023VKMJD24000000VS548985VVRPGK5E", "bfvLiga": "031G4AKIT4000006VS5489BUVSJ4CRAP-G", "trainer": ["Kevin Kraus", "Christian Schmid", "Andreas Lehner"]},
+    {"id": "b", "name": "B-Junioren", "alter": "U17", "seite": "b-junioren", "page": 2067, "liga": "U17 (B-Jun) CHA/SAD KL Q-West", "bfvTeam": "01L5HD4L6K000000VV0AG80NVTB5JGKG", "bfvLiga": "031K6B6RI8000006VS5489BTVSRD0UH9-G", "trainer": ["Antonio Santoro", "Christian Fröhler", "Ilir Brahimaj"]},
+    {"id": "c", "name": "C-Junioren", "alter": "U15", "seite": "c-junioren", "page": 2061, "liga": "U15 (C-Jun) CHA/SAD Q-KL SAD", "bfvTeam": "01E0F254UG000000VV0AG811VSV7BE29", "bfvLiga": "031L314D6K000006VS5489BUVVKNMR0J-G", "trainer": ["Peter Schießl", "Jan Vollstädt", "Lukas Hanauer"]},
+    {"id": "d", "name": "D-Junioren", "alter": "U13", "seite": "d-junioren", "page": 1864, "liga": "U13 (D-Jun.) CHA/SAD KK Q-SAD", "bfvTeam": "015C064PMC000000VV0AG80NVTS84OA8", "bfvLiga": "031M5CIGKS000007VS5489BTVSRD0UH9-G", "trainer": ["Daniel Leitmeier", "Tobias Weiler"]},
+    {"id": "e1", "name": "E-Junioren I", "alter": "U11", "seite": "e-junioren-i", "page": 2110, "liga": "U11 (E-Jun) SAD Q-B 1", "bfvTeam": "011MIC9E60000000VTVG0001VTR8C1K7", "bfvLiga": "031LJKVKKO000006VS5489BUVVKNMR0J-G", "trainer": ["Thomas Hösl", "Stefan Kiener"]},
+    {"id": "e2", "name": "E-Junioren II", "alter": "U11", "seite": "e-junioren-ii", "page": 2113, "liga": "U11 (E-Jun) SAD Q-C 1", "bfvTeam": "02MBPB754S000000VS5489B1VV4JLPLE", "bfvLiga": "031LJKVKUO000006VS5489BUVVKNMR0J-G", "trainer": ["Sebastian Braun", "David Beck"]},
+    {"id": "e3", "name": "E-Junioren III", "alter": "U11", "seite": "e-junioren-iii", "page": 2571, "liga": "U11 (E-Jun) SAD Q-D (5er)", "bfvTeam": "031DQFS50K000000VS5489BSVU7CJV8J", "bfvLiga": "031LJKVL9C000005VS5489BUVVKNMR0J-G", "trainer": ["Sebastian Braun", "Stefan Kiener"]},
+    {"id": "f1", "name": "F-Junioren I", "alter": "U9", "seite": "f-junioren-i", "page": 2120, "trainer": ["Marco Pressl", "Tassin Kadir"]},
+    {"id": "f2", "name": "F-Junioren II", "alter": "U9", "seite": "f-junioren-ii", "page": 2124, "trainer": ["Tobias Bernklau", "Michael Brummer"]},
+    {"id": "g", "name": "G-Junioren", "alter": "U7", "seite": "g-junioren", "page": 2624, "trainer": ["Michael Lottner", "Thomas Brummer", "Stefan Zimmermann"]}
+  ],
+
   "sparte": [
     ["Spartenleitung", [
       ["Spartenleiter · Sport", "Tobias Bernklau"],

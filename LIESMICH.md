@@ -42,7 +42,15 @@ Das Datum steht als Jahr-Monat-Tag. Vergangene Termine blendet die App automatis
 **Neue Stadionzeitung:** Das PDF wie gewohnt in WordPress hochladen und im Abschnitt `"zeitung"` ganz oben eintragen:
 `["31.10.2026", "Hahnbach", "https://…/Stadionzeitung.pdf"]`. Die oberste Ausgabe erscheint auf der Startseite.
 
-**Trainer oder Liga ändern:** Abschnitt `"teams"`.
+**Trainer oder Liga ändern:** Abschnitt `"teams"` (Herren) bzw. `"jugend"` (Jugend).
+
+**Jugend:** Spiele und Tabellen kommen live vom BFV. Dafür braucht jede Mannschaft im Abschnitt `"jugend"`
+zwei BFV-Kennungen: `bfvTeam` (die Mannschaft) und `bfvLiga` (der Wettbewerb). Die Wettbewerbs-Kennung steht im
+Widget-Code auf der Homepage, z. B. `BFVWidget.HTML5.zeigeWettbewerb("031K6B6R…-G", …)`.
+Zur neuen Saison ändern sich diese Kennungen – dann einfach Claude Bescheid geben.
+Mannschaften ohne Kennungen (F- und G-Junioren) erscheinen ohne Spiele und Tabelle.
+Das Mannschaftsfoto holt sich die App automatisch von der jeweiligen Seite der Homepage (Feld `page`).
+Die App-Adresse ist beim BFV als Webseite registriert; ohne diese Registrierung liefert der BFV keine Daten.
 
 **Vereinsfarbe ändern:** In `style.css` ganz oben die Zeile `--red:#DB0000;`.
 
