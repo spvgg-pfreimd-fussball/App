@@ -3,7 +3,7 @@
    Eigene Dateien werden immer zuerst frisch aus dem Netz geholt und nur
    ohne Netz aus dem Zwischenspeicher geladen. Daten von FuPa und aus dem
    Shop werden hier nicht zwischengespeichert. */
-const CACHE = "spvgg-app-v1.10";
+const CACHE = "spvgg-app-v1.11";
 const SHELL = ["./", "index.html", "style.css", "app.js", "daten/inhalte.json",
   "img/wappen.webp", "img/icon-192.png", "manifest.webmanifest"];
 

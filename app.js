@@ -207,9 +207,8 @@ function viewNews() {
   const youthBlock = yList.length ? `<section class="sec"><h2 class="h">${ySoon.length ? "Jugend diese Woche" : "Jugend: letzte Ergebnisse"} <a href="#teams" data-group="jugend">Alle Teams</a></h2>
     <div class="card rows">${yList.slice(0, 8).map(([t, m]) => matchRow(t, m, true)).join("")}</div></section>` : "";
   const ed = isEditor();
-  const evs = S.events.map((e, i) => [e, i]).filter(([e]) => toDate(e.d) >= today());
-  const events = evs.length || ed ? `<section class="sec"><h2 class="h">Ankündigungen ${ed ? `<a href="#news/red-ank-neu">+ Neue Ankündigung</a>` : ""}</h2><div class="events">${evs.map(([e, i]) => { const d = toDate(e.d);
-      return `<a class="card ev" href="#news/ank-${i}"><div class="cal"><i>${MON[d.getMonth()]}</i><b class="tabnum">${d.getDate()}</b></div><span>${esc(e.t)}</span>${e.img ? `<img class="evthumb" src="${esc(abs(e.img))}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}</a>`; }).join("")}</div></section>` : "";
+  const events = `<section class="sec"><h2 class="h">Ankündigungen ${ed ? `<a href="#news/red-ank-neu">+ Neue Ankündigung</a>` : ""}</h2>
+    <div class="card calcard" id="calbox">${calHtml()}</div></section>`;
   const z = S.zeitung[0];
   return `${hero}
     <div class="minis">${minis}</div>
@@ -225,6 +224,47 @@ function viewNews() {
         <div class="tx"><span class="date">${esc(n.d)}${n.entwurf ? ` · <b class="draft">Entwurf</b>` : ""}</span><h3>${esc(n.t)}</h3><p>${esc(n.p[0] || "")}</p></div></button>`).join("")}
     </div></section>`;
 }
+
+/* ---------- Ankündigungen als Monatskalender (Startseite) ----------
+   Tage mit Ankündigung sind markiert. Ein Tipp auf einen Tag zeigt dessen
+   Ankündigungen darunter, ohne Auswahl stehen alle Ankündigungen des Monats dort. */
+const MONATSNAME = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+function calHtml() {
+  if (!state.calMonth) { const n = new Date(); state.calMonth = new Date(n.getFullYear(), n.getMonth(), 1); }
+  const m = state.calMonth, y = m.getFullYear(), mo = m.getMonth();
+  const key = d => `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
+  const inMonth = S.events.map((e, i) => [e, i]).filter(([e]) => { const d = toDate(e.d); return d.getFullYear() === y && d.getMonth() === mo; })
+    .sort((a, b) => a[0].d.localeCompare(b[0].d));
+  const byDay = {};
+  for (const [e, i] of inMonth) (byDay[e.d] = byDay[e.d] || []).push([e, i]);
+  const todayKey = key(today());
+  const sel = state.calSel && state.calSel.startsWith(`${y}-${two(mo + 1)}-`) ? state.calSel : null;   // gewählter Tag (nur im angezeigten Monat)
+  const days = new Date(y, mo + 1, 0).getDate(), offset = (new Date(y, mo, 1).getDay() + 6) % 7;
+  let cells = "";
+  for (let i = 0; i < offset; i++) cells += `<span class="day empty" aria-hidden="true"></span>`;
+  for (let dnum = 1; dnum <= days; dnum++) {
+    const k = `${y}-${two(mo + 1)}-${two(dnum)}`, n = (byDay[k] || []).length;
+    const cls = ["day", n ? "has" : "", k === todayKey ? "today" : "", k === sel ? "sel" : "", k < todayKey ? "past" : ""].filter(Boolean).join(" ");
+    cells += `<button type="button" class="${cls}" data-cal-day="${k}" aria-pressed="${k === sel}" aria-label="${dnum}. ${MONATSNAME[mo]}${n ? `, ${n} Ankündigung${n > 1 ? "en" : ""}` : ""}">${dnum}</button>`;
+  }
+  const list = sel ? (byDay[sel] || []) : inMonth;
+  const selDate = sel ? toDate(sel) : null;
+  const head = sel ? `${WD[selDate.getDay()]}, ${selDate.getDate()}. ${MONATSNAME[mo]}` : `Im ${MONATSNAME[mo]}`;
+  const items = list.map(([e, i]) => { const d = toDate(e.d);
+    return `<a class="calitem${e.d < todayKey ? " past" : ""}" href="#news/ank-${i}">
+      <span class="cald"><i>${WD[d.getDay()]}</i><b class="tabnum">${d.getDate()}.</b></span>
+      <span class="calt"><b>${esc(e.t)}</b>${e.p?.[0] ? `<small>${esc(e.p[0])}</small>` : ""}</span>
+      ${e.img ? `<img class="evthumb" src="${esc(abs(e.img))}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : `<span class="chev" aria-hidden="true">›</span>`}</a>`; }).join("");
+  return `<div class="calhead">
+      <button type="button" class="calnav" data-cal-nav="-1" aria-label="Vorheriger Monat">‹</button>
+      <b>${MONATSNAME[mo]} ${y}</b>
+      <button type="button" class="calnav" data-cal-nav="1" aria-label="Nächster Monat">›</button></div>
+    <div class="calgrid" role="group" aria-label="Kalender ${MONATSNAME[mo]} ${y}">
+      ${["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map(w => `<span class="wd">${w}</span>`).join("")}${cells}</div>
+    <div class="callist"><div class="calsub">${head}</div>
+      ${items || `<p class="muted calnone">${sel ? "An diesem Tag ist nichts angekündigt." : `Im ${MONATSNAME[mo]} ist nichts angekündigt.`}</p>`}</div>`;
+}
+function refreshCal() { const box = document.getElementById("calbox"); if (box) box.innerHTML = calHtml(); }
 
 function viewSpiele() {
   const t = state.team, f = teamData(t);
@@ -337,7 +377,7 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.10</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.11</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -475,6 +515,12 @@ document.addEventListener("click", e => {
     if (link.dataset.group) { state.group = link.dataset.group; if (panes.teams) panes.teams.dirty = true; }
     if (link.getAttribute("href") === "#" + current() && !route().detail) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }
     return;
+  }
+  const cb = e.target.closest("[data-cal-nav],[data-cal-day]");
+  if (cb) {
+    if (cb.dataset.calNav) { const m = state.calMonth; state.calMonth = new Date(m.getFullYear(), m.getMonth() + +cb.dataset.calNav, 1); state.calSel = null; }
+    else state.calSel = state.calSel === cb.dataset.calDay ? null : cb.dataset.calDay;
+    refreshCal(); return;
   }
   const rb = e.target.closest("[data-red]");
   if (rb) { redAction(rb); return; }
@@ -673,7 +719,7 @@ function redAnkForm(idx) {
   const img = e?.img ? abs(e.img) : "";
   return `<h2 id="sheet-title">${e ? "Ankündigung bearbeiten" : "Neue Ankündigung"}</h2>
     <form id="redform" class="form" data-kind="ank" data-idx="${esc(idx)}">
-      <label for="f-date">Datum<input id="f-date" type="date" required value="${esc(e?.d || "")}"></label>
+      <label for="f-date">Datum<input id="f-date" type="date" required value="${esc(e?.d || state.calSel || "")}"></label>
       <label for="f-t">Bezeichnung<input id="f-t" required value="${esc(e?.t || "")}" placeholder="z. B. Christbaumversteigerung"></label>
       <label for="f-p">Text (optional)<textarea id="f-p" rows="6" placeholder="z. B. Uhrzeit, Ort, Programm">${esc((e?.p || []).join("\n\n"))}</textarea><small class="hint">Eine Leerzeile beginnt einen neuen Absatz.</small></label>
       ${imgField(img, "Flyer oder Bild (optional)")}
