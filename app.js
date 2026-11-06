@@ -377,7 +377,7 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.11</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.12</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -488,6 +488,7 @@ function applyRoute() {
   else if (detail !== null && view === "teams" && youth(detail)) openSheet(youthSheet(detail));
   else if (detail !== null && SHEETS[detail]) openSheet(SHEETS[detail]());
   else closeSheet();
+  zaehle("/" + view + (detail !== null ? "/" + detail : ""));
 }
 const go = hash => { freshNav = true; location.hash = hash; };
 /* Offene Mannschaftsseite aktualisieren, wenn neue Daten oder Fotos ankommen */
@@ -1012,6 +1013,31 @@ async function loadWpPage(pg) {
     if (box && box.querySelector(".note")) box.innerHTML = `<p class="note">Die Seite konnte gerade nicht geladen werden. Bitte später noch einmal versuchen oder auf der Homepage ansehen.</p>`;
   }
 }
+
+/* ---------- Besucherzählung (GoatCounter, ohne Cookies und ohne persönliche Daten) ----------
+   Gezählt wird nur, welcher Bereich aufgerufen wird, wie oft die App auf Android installiert
+   und wie oft sie vom Startbildschirm gestartet wird. Die Zahlen: https://spvgg-pfreimd.goatcounter.com */
+const ZAEHLER = "https://spvgg-pfreimd.goatcounter.com/count";
+const zaehlerAn = /\.github\.io$/.test(location.hostname) && navigator.doNotTrack !== "1";
+let zuletztGezaehlt = "", ersterAufruf = true;
+function zaehlerSenden(q) {
+  if (!zaehlerAn) return;
+  try {
+    const u = new URLSearchParams({ ...q, rnd: Math.random().toString(36).slice(2) });
+    new Image().src = ZAEHLER + "?" + u;
+  } catch (e) {}
+}
+function zaehle(pfad) {
+  if (pfad === zuletztGezaehlt) return;
+  zuletztGezaehlt = pfad;
+  const q = { p: pfad };
+  if (ersterAufruf && document.referrer && !document.referrer.startsWith(location.origin)) q.r = document.referrer;
+  ersterAufruf = false;
+  zaehlerSenden(q);
+}
+const zaehleEreignis = name => zaehlerSenden({ p: name, t: name, e: "true" });
+window.addEventListener("appinstalled", () => zaehleEreignis("app-installiert-android"));
+if (matchMedia("(display-mode: standalone)").matches || navigator.standalone === true) zaehleEreignis("start-vom-startbildschirm");
 
 /* ---------- Start ---------- */
 async function start() {

@@ -19,6 +19,19 @@ Die Shop-Artikel kommen live aus dem WooCommerce-Shop der Homepage.
 Klappt das einmal nicht, zeigt die App den letzten Datenstand aus `daten/inhalte.json`.
 Die App lädt alles beim Öffnen neu, beim Zurückkehren nach mehr als 5 Minuten, und solange sie offen ist alle 15 Minuten (am Spieltag alle 2 Minuten).
 
+## Besucherzahlen
+
+Die App zählt mit [GoatCounter](https://www.goatcounter.com), ohne Cookies und ohne persönliche Daten.
+Die Zahlen stehen unter **https://spvgg-pfreimd.goatcounter.com** (Anmeldung mit dem GoatCounter-Konto).
+Gezählt wird:
+
+- welcher Bereich aufgerufen wird, z. B. `/news`, `/spiele`, `/teams/b`, `/mehr/leitbild`
+- `app-installiert-android`: die App wurde auf einem Android-Handy installiert (iPhones melden das nicht)
+- `start-vom-startbildschirm`: die App wurde über das Symbol auf dem Startbildschirm geöffnet (Android und iPhone)
+
+Gezählt wird nur auf der echten App-Adresse, nicht bei Tests, und nicht, wenn im Browser „Nicht verfolgen“ eingeschaltet ist.
+In der App selbst werden keine Zahlen angezeigt.
+
 ## Redaktion in der App (am bequemsten)
 
 News, Ankündigungen und die Stadionzeitung lassen sich direkt in der App bearbeiten: **Mehr → Redaktion**.
