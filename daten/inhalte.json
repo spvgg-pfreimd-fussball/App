@@ -76,7 +76,8 @@
   ],
 
   "zeitung": [
-    ["31.10.2026", "Hahnbach", "/wp-content/uploads/2026/11/2026_10_31-Stadionzeitung-Hahnbach.pdf"],
+    ["15.11.2026", "Wernberg", "/wp-content/uploads/2026/11/2026_11_15-Stadionzeitung-Wernberg.pdf"],
+    ["31.10.2026", "Hahnbach", "/download/2581/"],
     ["10.10.2026", "Raigering", "/download/2553/"],
     ["26.09.2026", "Schlicht", "/download/2544/"],
     ["13.09.2026", "Schwarzenfeld", "/download/2541/"],
@@ -88,7 +89,16 @@
     ["19.04.2026", "UPO", "/download/2203/"],
     ["12.04.2026", "Weiden II", "/download/2207/"],
     ["29.03.2026", "Amberg", "/download/2212/"],
-    ["15.03.2026", "Weiden-Ost", "/download/2217/"]
+    ["15.03.2026", "Weiden Ost", "/download/2217/"],
+    ["09.11.2025", "Chambtal", "/download/2221/"],
+    ["26.10.2025", "Tännesberg", "/download/2225/"],
+    ["03.10.2025", "Schirmitz", "/download/2229/"],
+    ["27.09.2025", "Arnschwang", "/download/2233/"],
+    ["07.09.2025", "IBA", "/download/2238/"],
+    ["24.08.2025", "Wernberg", "/download/2244/"],
+    ["15.08.2025", "Raindorf", "/download/2248/"],
+    ["02.08.2025", "Vohenstrauß", "/download/2252/"],
+    ["20.07.2025", "Schlicht", "/download/2256/"]
   ],
 
   "teams": [

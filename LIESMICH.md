@@ -14,7 +14,7 @@ Sie läuft im Browser und lässt sich auf jedem Handy wie eine App auf den Start
 | `img/` | Wappen und App-Symbole |
 | `manifest.webmanifest`, `sw.js` | Sorgen dafür, dass die App installierbar ist und offline startet |
 
-**Was automatisch kommt:** Das Leitbild (Mehr → Verein) wird live von der Homepage-Seite „Leitbild“ übernommen – Änderungen dort erscheinen automatisch in der App. Außerdem: Spielpläne, Ergebnisse und Tabellen holt die App live von FuPa.
+**Was automatisch kommt:** Das Leitbild (Mehr → Verein) wird live von der Homepage-Seite „Leitbild“ übernommen – Änderungen dort erscheinen automatisch in der App. Ebenso die Stadionzeitungen von der Homepage-Seite „Stadionzeitung“. Außerdem: Spielpläne, Ergebnisse und Tabellen holt die App live von FuPa.
 Die Shop-Artikel kommen live aus dem WooCommerce-Shop der Homepage.
 Klappt das einmal nicht, zeigt die App den letzten Datenstand aus `daten/inhalte.json`.
 Die App lädt alles beim Öffnen neu, beim Zurückkehren nach mehr als 5 Minuten, und solange sie offen ist alle 15 Minuten (am Spieltag alle 2 Minuten).
@@ -66,8 +66,11 @@ Wichtig: Nach jedem Eintrag außer dem letzten steht ein Komma.
 optional mit `"img"` (Flyer) und `"p"` (Absätze wie bei News).
 Das Datum steht als Jahr-Monat-Tag. Vergangene Ankündigungen blendet die App automatisch aus.
 
-**Neue Stadionzeitung:** Das PDF wie gewohnt in WordPress hochladen und im Abschnitt `"zeitung"` ganz oben eintragen:
-`["31.10.2026", "Hahnbach", "https://…/Stadionzeitung.pdf"]`. Die oberste Ausgabe erscheint auf der Startseite.
+**Neue Stadionzeitung:** Einfach wie gewohnt auf der Homepage-Seite „Stadionzeitung“ einbauen – die App holt sich
+die Liste von dort automatisch. Wichtig ist nur der Dateiname im Muster `2026_11_15-Stadionzeitung-Wernberg`:
+Daraus liest die App Datum und Gegner. Die neueste Ausgabe erscheint auf der Startseite.
+Der Abschnitt `"zeitung"` in `inhalte.json` ist nur noch der Notfall-Stand, falls die Homepage nicht erreichbar ist;
+Ausgaben, die nur über die Redaktion der App hochgeladen wurden, zeigt die App zusätzlich an.
 
 **Trainer oder Liga ändern:** Abschnitt `"teams"` (Herren) bzw. `"jugend"` (Jugend).
 

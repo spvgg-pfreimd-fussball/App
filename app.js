@@ -209,14 +209,14 @@ function viewNews() {
   const ed = isEditor();
   const events = `<section class="sec"><h2 class="h">Ankündigungen ${ed ? `<a href="#news/red-ank-neu">+ Neue Ankündigung</a>` : ""}</h2>
     <div class="card calcard" id="calbox">${calHtml()}</div></section>`;
-  const z = S.zeitung[0];
+  const z = zeitungen()[0];
   return `${hero}
     <div class="minis">${minis}</div>
     <section class="sec"><h2 class="h">Letzte Ergebnisse <a href="#spiele">Alle Spiele</a></h2><div class="card rows">${results}</div></section>
     ${youthBlock}
     ${events}
     <section class="sec"><h2 class="h">Stadionzeitung ${ed ? `<a href="#news/red">Bearbeiten</a>` : ""}</h2>
-      <a class="card paper" href="${abs(z[2])}" target="_blank" rel="noopener"><span class="ic">PDF</span><span><span class="muted" style="font-size:13px">Ausgabe vom ${z[0]}</span><b>Heimspiel gegen ${esc(z[1])}</b></span><span class="go" aria-hidden="true">↗</span></a>
+      ${z ? `<a class="card paper" href="${abs(z[2])}" target="_blank" rel="noopener"><span class="ic">PDF</span><span><span class="muted" style="font-size:13px">Ausgabe vom ${z[0]}</span><b>Heimspiel gegen ${esc(z[1])}</b></span><span class="go" aria-hidden="true">↗</span></a>` : ""}
     </section>
     <section class="sec"><h2 class="h">Neuigkeiten ${ed ? `<a href="#news/red-news-neu">+ Neue News</a>` : ""}</h2><div class="news">
       ${S.news.map((n, i) => n.entwurf && !ed ? "" : `<button class="card nc" data-news="${i}">
@@ -366,7 +366,7 @@ function viewMehr() {
       ${L("Sponsoren", "/sponsoren/", "Unsere Partner auf der Homepage")}
       ${L("Satzung", "/wp-content/uploads/2026/06/Satzung.pdf", "PDF")}
     </div></section>
-    <section class="sec"><h2 class="h">Stadionzeitung</h2><div class="card list">${B("Archiv", "zeitung", `${S.zeitung.length} Ausgaben seit März 2026`)}</div></section>
+    <section class="sec"><h2 class="h">Stadionzeitung</h2><div class="card list">${B("Archiv", "zeitung", zeitungInfo())}</div></section>
     <section class="sec"><h2 class="h">Service</h2><div class="card list">
       ${B("Anfahrt", "anfahrt", "Vereinsheim und Trainingsgelände")}
       ${B("Kontakt", "kontakt", "E-Mail und Kontaktformular")}
@@ -377,7 +377,7 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.12</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.13</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -388,7 +388,7 @@ const SHEETS = {
   historie: () => `<h2 id="sheet-title">Historie</h2><ol class="tl" reversed>${[...S.historie].reverse().map(h => `<li><span class="when">${esc(h[0])}</span><b>${esc(h[1])}</b>${h[2] ? `<p>${esc(h[2])}</p>` : ""}</li>`).join("")}</ol>`,
   hymne: () => `<h2 id="sheet-title">Vereinshymne</h2><p><b>„Die Rot-Weißen“</b></p><p class="muted">Text: Christian Modl & die Ultras · Musik: Christian Modl · Arrangement: Marc Hohl · © 2015</p>
     <div><a class="btn" href="${SITE}/vereinshymne/" target="_blank" rel="noopener">Hymne anhören ↗</a></div>`,
-  zeitung: () => `<h2 id="sheet-title">Stadionzeitung</h2><div class="card list">${S.zeitung.map(z => `<a class="li" href="${abs(z[2])}" target="_blank" rel="noopener"><span>${esc(z[1])}<small class="tabnum">${z[0]}</small></span><span class="ext" aria-hidden="true">PDF ↗</span></a>`).join("")}</div>`,
+  zeitung: () => `<h2 id="sheet-title">Stadionzeitung</h2><div class="card list">${zeitungen().map(z => `<a class="li" href="${abs(z[2])}" target="_blank" rel="noopener"><span>${esc(z[1])}<small class="tabnum">${z[0]}</small></span><span class="ext" aria-hidden="true">PDF ↗</span></a>`).join("")}</div>`,
   anfahrt: () => `<h2 id="sheet-title">Anfahrt</h2><div class="card kv"><div><span>Anschrift</span>Fußball Pfreimd<br>Stadtgraben 15, 92536 Pfreimd</div></div>
     <div><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Stadtgraben%2015%2C%2092536%20Pfreimd" target="_blank" rel="noopener">In Google Maps öffnen ↗</a></div>`,
   kontakt: () => `<h2 id="sheet-title">Kontakt</h2><p>Schreib uns direkt per E-Mail oder nutze das Formular auf der Homepage.</p>
@@ -920,7 +920,7 @@ async function refreshAll() {
   refreshing = true; lastLoad = Date.now();
   const { detail } = route();
   const editing = !document.getElementById("sheet").hidden && detail && detail.startsWith("red");
-  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), editing ? null : reloadContent()]);
+  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), loadZeitung(), editing ? null : reloadContent()]);
   refreshing = false;
 }
 document.addEventListener("visibilitychange", () => {
@@ -931,6 +931,64 @@ setInterval(() => {
   const every = matchToday() ? 2 * 60e3 : 15 * 60e3;
   if (Date.now() - lastLoad >= every) refreshAll();
 }, 30e3);
+
+/* ---------- Stadionzeitung live von der Homepage-Seite „Stadionzeitung“ (WordPress-Seite 413) ----------
+   Die App liest die Download-Links der Seite. Aus dem Dateinamen „2026_11_15-Stadionzeitung-Wernberg“
+   werden Datum und Gegner. Ausgaben, die nur über die Redaktion der App hochgeladen wurden
+   (Ordner zeitung/ im Repository), kommen dazu. Klappt das Laden nicht, gilt der letzte Stand. */
+const ZEITUNG_SEITE = 413;
+function parseZeitung(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const byDate = {};
+  for (const a of doc.querySelectorAll("a[href]")) {
+    const name = a.textContent.replace(/\s+/g, " ").trim();
+    let href = a.getAttribute("href") || "";
+    const m = /(\d{4})[_.-](\d{1,2})[_.-](\d{1,2})/.exec(name) || /(\d{4})[_.-](\d{1,2})[_.-](\d{1,2})/.exec(decodeURIComponent(href.split("/").pop() || ""));
+    if (!m || !/^https:\/\//.test(href) || !/\.pdf$|\/download\/\d+/i.test(href.split("?")[0])) continue;
+    const iso = `${m[1]}-${two(m[2])}-${two(m[3])}`;
+    const gegner = (name.split(/stadionzeitung/i)[1] ?? name.slice(m.index + m[0].length))
+      .replace(/[_]+/g, " ").replace(/^[\s\-–]+|[\s\-–]+$/g, "").trim() || "Stadionzeitung";
+    href = href.replace(/\?tmstv=\d+$/, "");
+    const old = byDate[iso];
+    /* Direkter PDF-Link (Vorschau der aktuellen Ausgabe) geht vor dem Download-Link */
+    if (!old || (/\.pdf$/i.test(href) && !/\.pdf$/i.test(old[2]))) byDate[iso] = [`${m[3].padStart(2, "0")}.${m[2].padStart(2, "0")}.${m[1]}`, gegner, href.replace(SITE, "")];
+  }
+  return Object.keys(byDate).sort().reverse().map(k => byDate[k]);
+}
+const vonHomepage = u => u.startsWith("/") || u.startsWith(SITE);
+function zeitungen() {
+  const live = state.zLive;
+  if (!live || !live.length) return S.zeitung;
+  const dates = new Set(live.map(z => z[0]));
+  const nurApp = S.zeitung.filter(z => !vonHomepage(z[2]) && !dates.has(z[0]));
+  return [...live, ...nurApp].sort((a, b) => deToIso(b[0]).localeCompare(deToIso(a[0])));
+}
+function zeitungInfo() {
+  const l = zeitungen(), last = l[l.length - 1];
+  if (!last) return "";
+  const [, mo, y] = last[0].split(".");
+  const monat = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"][+mo - 1];
+  return `${l.length} Ausgaben seit ${monat} ${y}`;
+}
+async function loadZeitung() {
+  if (!state.zLive) { try { state.zLive = JSON.parse(localStorage.getItem("spvgg-zeitung") || "null"); } catch (e) {} }
+  const before = JSON.stringify(zeitungen());
+  try {
+    const j = await getJSON(`${SITE}/wp-json/wp/v2/pages/${ZEITUNG_SEITE}?_fields=content`, 10000);
+    const list = parseZeitung(j.content.rendered);
+    if (list.length) {
+      state.zLive = list;
+      try { localStorage.setItem("spvgg-zeitung", JSON.stringify(list)); } catch (e) {}
+    }
+  } catch (e) { /* letzter Stand bleibt */ }
+  if (JSON.stringify(zeitungen()) !== before) {
+    if (panes.news) panes.news.dirty = true;
+    if (panes.mehr) panes.mehr.dirty = true;
+    if (["news", "mehr"].includes(current())) render();
+    const { detail } = route(), sh = document.getElementById("sheet");
+    if (detail === "zeitung" && !sh.hidden) { const y = sh.scrollTop; document.getElementById("sheet-body").innerHTML = SHEETS.zeitung(); sh.scrollTop = y; }
+  }
+}
 
 /* ---------- Seiten der Homepage live übernehmen (z. B. Leitbild) ----------
    Der Inhalt kommt direkt aus WordPress und wird für die App bereinigt:
@@ -1052,12 +1110,14 @@ async function start() {
   state.products = S.products;
   const [, m, d] = S.stand.split("-");
   document.getElementById("src").textContent = `Stand ${d}.${m}.`;
+  try { state.zLive = JSON.parse(localStorage.getItem("spvgg-zeitung") || "null"); } catch (e) {}
   applyRoute();
   lastLoad = Date.now();
   loadLive();
   loadShop();
   loadYouth();
   loadPhotos();
+  loadZeitung();
 }
 start();
 
