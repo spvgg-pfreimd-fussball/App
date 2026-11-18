@@ -79,7 +79,9 @@ zwei BFV-Kennungen: `bfvTeam` (die Mannschaft) und `bfvLiga` (der Wettbewerb). D
 Widget-Code auf der Homepage, z. B. `BFVWidget.HTML5.zeigeWettbewerb("031K6B6R…-G", …)`.
 Zur neuen Saison ändern sich diese Kennungen – dann einfach Claude Bescheid geben.
 Mannschaften ohne Kennungen (F- und G-Junioren) erscheinen ohne Spiele und Tabelle.
-Das Mannschaftsfoto holt sich die App automatisch von der jeweiligen Seite der Homepage (Feld `page`).
+Das Mannschaftsfoto und die Trainingszeiten holt sich die App automatisch von der jeweiligen Seite der Homepage (Feld `page`).
+Für die Trainingszeiten liest sie den Absatz „Trainingszeiten (…):“ und die Zeilen darunter bis zum nächsten Zwischentitel (z. B. „Trainerstab:“).
+Steht auf einer Seite kein solcher Absatz, lässt die App den Block weg.
 Die App-Adresse ist beim BFV als Webseite registriert; ohne diese Registrierung liefert der BFV keine Daten.
 
 **Vereinsfarbe ändern:** In `style.css` ganz oben die Zeile `--red:#DB0000;`.

@@ -19,7 +19,7 @@ const HERREN = ["m1", "m2", "m3"];
 const BFV = "https://widget-prod.bfv.de/api/service/widget/v1/";
 
 const state = { team: "m1", spMode: "spiele", cat: "Alle", group: "herren",
-  fupa: {}, bfv: {}, photos: {}, products: [], live: false };
+  fupa: {}, bfv: {}, photos: {}, training: {}, products: [], live: false };
 
 /* ---------- Hilfsfunktionen ---------- */
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -144,20 +144,47 @@ async function loadYouth() {
   await Promise.all(S.jugend.filter(j => j.bfvTeam).map(loadBfvTeam));
   if (JSON.stringify(state.bfv) !== before) { invalidate(); render(); refreshSheet(); }
 }
-/* Mannschaftsfotos der Jugend: erstes großes Bild der jeweiligen Homepage-Seite */
+/* Trainingszeiten von der Homepage-Seite: Absatz „Trainingszeiten (…):“ und alles darunter
+   (Tabellenzeilen, Absätze, Listen) bis zum nächsten Zwischentitel, z. B. „Trainerstab:“ */
+function parseTraining(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const clean = t => t.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+  const isTitle = el => el.tagName === "P" && /:\s*$/.test(clean(el.textContent)) && el.querySelector("strong,b,em");
+  const head = [...doc.body.querySelectorAll("p,h2,h3,h4,h5,h6")].find(el => /trainingszeit/i.test(el.textContent));
+  if (!head) return null;
+  const m = /trainingszeiten?\s*(?:\((.*)\))?/i.exec(clean(head.textContent).replace(/:\s*$/, ""));
+  const rows = [];
+  for (let el = head.nextElementSibling; el; el = el.nextElementSibling) {
+    if (/^H\d$/.test(el.tagName) || isTitle(el)) break;
+    const trs = el.querySelectorAll("tr");
+    if (trs.length) trs.forEach(tr => { const t = [...tr.querySelectorAll("td,th")].map(c => clean(c.textContent)).filter(Boolean).join(" · "); if (t) rows.push(t); });
+    else if (el.querySelectorAll("li").length) el.querySelectorAll("li").forEach(li => { const t = clean(li.textContent); if (t) rows.push(t); });
+    else { const t = clean(el.textContent); if (t) rows.push(t); }
+  }
+  return rows.length ? { info: m && m[1] ? clean(m[1]) : "", rows: rows.slice(0, 8) } : null;
+}
+/* Mannschaftsfotos (erstes großes Bild) und Trainingszeiten der jeweiligen Homepage-Seite */
 async function loadPhotos() {
   try { Object.assign(state.photos, JSON.parse(localStorage.getItem("spvgg-fotos") || "{}")); } catch (e) {}
+  try { Object.assign(state.training, JSON.parse(localStorage.getItem("spvgg-training") || "{}")); } catch (e) {}
+  const before = JSON.stringify([state.photos, state.training]);
   const ids = S.jugend.map(j => j.page).filter(Boolean);
   try {
     const pages = await getJSON(`${SITE}/wp-json/wp/v2/pages?include=${ids.join(",")}&per_page=50&_fields=id,content`, 12000);
     for (const pg of pages) {
-      const imgs = [...String(pg.content?.rendered || "").matchAll(/<img[^>]*>/gi)].map(m => m[0]);
+      const html = String(pg.content?.rendered || "");
+      const imgs = [...html.matchAll(/<img[^>]*>/gi)].map(m => m[0]);
       const big = imgs.find(tag => +(/width="(\d+)"/.exec(tag)?.[1] || 0) >= 500);
       const src = big && /src="([^"]+)"/.exec(big)?.[1];
       if (src) state.photos[pg.id] = src; else delete state.photos[pg.id];
+      const tr = parseTraining(html);
+      if (tr) state.training[pg.id] = tr; else delete state.training[pg.id];
     }
     try { localStorage.setItem("spvgg-fotos", JSON.stringify(state.photos)); } catch (e) {}
-  } catch (e) { /* ohne Fotos geht es auch */ }
+    try { localStorage.setItem("spvgg-training", JSON.stringify(state.training)); } catch (e) {}
+  } catch (e) { /* ohne Fotos und Trainingszeiten geht es auch */ }
+  if (JSON.stringify([state.photos, state.training]) === before && loadPhotos.done) return;
+  loadPhotos.done = true;
   if (panes.teams) panes.teams.dirty = true;
   if (current() === "teams") render();
   refreshSheet();
@@ -319,7 +346,7 @@ function youthCard(j) {
 }
 /* Mannschaftsseite einer Jugend (#teams/b) */
 function youthSheet(id) {
-  const j = youth(id), f = state.bfv[id], ph = youthPhoto(j);
+  const j = youth(id), f = state.bfv[id], ph = youthPhoto(j), tr = state.training[j.page];
   let data = "";
   if (j.bfvTeam) {
     if (!f) data = `<p class="note">Spiele und Tabelle werden geladen …</p>`;
@@ -341,6 +368,7 @@ function youthSheet(id) {
   return `${ph ? `<img class="hero" src="${esc(ph)}" alt="Mannschaftsfoto ${esc(j.name)}" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}
     <div><h2 id="sheet-title">${esc(j.name)}</h2><div class="muted">${esc(j.alter)}${f?.liga || j.liga ? ` · ${esc(f?.liga || j.liga)}` : ""}</div></div>
     ${data}
+    ${tr ? `<section class="sec"><h3 class="h">Trainingszeiten</h3><div class="card kv">${tr.rows.map(r => `<div>${esc(r)}${tr.info ? `<span>${esc(tr.info)}</span>` : ""}</div>`).join("")}</div></section>` : ""}
     ${j.trainer?.length ? `<section class="sec"><h3 class="h">Trainerteam</h3><div class="card kv">${j.trainer.map(n => `<div>${esc(n)}</div>`).join("")}</div></section>` : ""}
     <div><a class="btn ghost" href="${SITE}/${j.seite}/" target="_blank" rel="noopener">Seite auf der Homepage ↗</a></div>`;
 }
@@ -377,7 +405,7 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.13</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.14</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -920,7 +948,7 @@ async function refreshAll() {
   refreshing = true; lastLoad = Date.now();
   const { detail } = route();
   const editing = !document.getElementById("sheet").hidden && detail && detail.startsWith("red");
-  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), loadZeitung(), editing ? null : reloadContent()]);
+  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), loadZeitung(), loadPhotos(), editing ? null : reloadContent()]);
   refreshing = false;
 }
 document.addEventListener("visibilitychange", () => {
