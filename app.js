@@ -1059,7 +1059,8 @@ function parseHpNews(raw) {
     const first = [...inner.querySelectorAll("img")].find(i => /^https:\/\//.test(i.getAttribute("src") || ""));
     const img = first ? first.getAttribute("src").replace(SITE, "") : "";
     if (first) { const holder = first.closest("p,figure"); first.remove(); if (holder && !holder.textContent.trim() && !holder.querySelector("img")) holder.remove(); }
-    const teaser = [...inner.querySelectorAll("p")].map(p => p.textContent.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim()).find(x => x.length > 20) || "";
+    const texte = [...inner.querySelectorAll("p,h2,h3,h4,li")].map(p => p.textContent.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim()).filter(Boolean);
+    const teaser = texte.find(x => x.length > 20) || texte[0] || "";
     let k = "h-" + slug(t);
     used[k] = (used[k] || 0) + 1; if (used[k] > 1) k += "-" + used[k];
     out.push({ k, d, t, img, p: [teaser.slice(0, 240)], html: cleanNode(inner), hp: true });
