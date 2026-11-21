@@ -14,7 +14,7 @@ Sie läuft im Browser und lässt sich auf jedem Handy wie eine App auf den Start
 | `img/` | Wappen und App-Symbole |
 | `manifest.webmanifest`, `sw.js` | Sorgen dafür, dass die App installierbar ist und offline startet |
 
-**Was automatisch kommt:** Das Leitbild (Mehr → Verein) wird live von der Homepage-Seite „Leitbild“ übernommen – Änderungen dort erscheinen automatisch in der App. Ebenso die Stadionzeitungen von der Homepage-Seite „Stadionzeitung“. Außerdem: Spielpläne, Ergebnisse und Tabellen holt die App live von FuPa.
+**Was automatisch kommt:** Das Leitbild (Mehr → Verein) wird live von der Homepage-Seite „Leitbild“ übernommen – Änderungen dort erscheinen automatisch in der App. Ebenso die Stadionzeitungen von der Homepage-Seite „Stadionzeitung“. Und die Neuigkeiten von der Homepage-Seite „News“: Jeder Eintrag der aufklappbaren Liste mit der Überschrift „19. November 2026: Titel“ wird eine News in der App (erstes Bild als Titelbild). News, die nur in der App angelegt wurden, erscheinen zusätzlich; steht eine News mit derselben Überschrift auf beiden, gilt die Fassung der Homepage. Außerdem: Spielpläne, Ergebnisse und Tabellen holt die App live von FuPa.
 Die Shop-Artikel kommen live aus dem WooCommerce-Shop der Homepage.
 Klappt das einmal nicht, zeigt die App den letzten Datenstand aus `daten/inhalte.json`.
 Die App lädt alles beim Öffnen neu, beim Zurückkehren nach mehr als 5 Minuten, und solange sie offen ist alle 15 Minuten (am Spieltag alle 2 Minuten).

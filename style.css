@@ -305,3 +305,13 @@ a.ev{text-decoration:none;color:inherit}
 .calt b{font-weight:700;font-size:15.5px}
 .calt small{font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .calitem .chev{color:var(--ink-3);font-size:18px}
+
+/* News von der Homepage (v1.15) */
+.hpn{display:flex;flex-direction:column;gap:12px}
+.hpn p,.hpn li{margin:0;max-width:65ch;font-size:16.5px;line-height:1.65}
+.hpn h3,.hpn h4{margin:8px 0 0;font-family:var(--f-head);font-weight:800;font-size:18px;line-height:1.3;color:var(--red)}
+.hpn ul,.hpn ol{margin:0;padding-left:22px}
+.hpn figure{margin:0}
+.hpn img{max-width:100%;height:auto;border-radius:14px;display:block;margin:0 auto}
+.hpn a{color:var(--red);overflow-wrap:anywhere}
+.news > .btn{justify-self:start;align-self:flex-start}

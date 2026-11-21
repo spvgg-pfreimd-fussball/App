@@ -237,6 +237,7 @@ function viewNews() {
   const events = `<section class="sec"><h2 class="h">Ankündigungen ${ed ? `<a href="#news/red-ank-neu">+ Neue Ankündigung</a>` : ""}</h2>
     <div class="card calcard" id="calbox">${calHtml()}</div></section>`;
   const z = zeitungen()[0];
+  const nl = newsList().filter(n => !n.entwurf || ed);
   return `${hero}
     <div class="minis">${minis}</div>
     <section class="sec"><h2 class="h">Letzte Ergebnisse <a href="#spiele">Alle Spiele</a></h2><div class="card rows">${results}</div></section>
@@ -246,9 +247,10 @@ function viewNews() {
       ${z ? `<a class="card paper" href="${abs(z[2])}" target="_blank" rel="noopener"><span class="ic">PDF</span><span><span class="muted" style="font-size:13px">Ausgabe vom ${z[0]}</span><b>Heimspiel gegen ${esc(z[1])}</b></span><span class="go" aria-hidden="true">↗</span></a>` : ""}
     </section>
     <section class="sec"><h2 class="h">Neuigkeiten ${ed ? `<a href="#news/red-news-neu">+ Neue News</a>` : ""}</h2><div class="news">
-      ${S.news.map((n, i) => n.entwurf && !ed ? "" : `<button class="card nc" data-news="${i}">
+      ${nl.slice(0, state.newsAll ? nl.length : NEWS_START).map(n => `<button class="card nc" data-news="${esc(n.k)}">
         ${n.img ? `<img class="img" src="${esc(abs(n.img))}" alt="" decoding="async" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}
         <div class="tx"><span class="date">${esc(n.d)}${n.entwurf ? ` · <b class="draft">Entwurf</b>` : ""}</span><h3>${esc(n.t)}</h3><p>${esc(n.p[0] || "")}</p></div></button>`).join("")}
+      ${!state.newsAll && nl.length > NEWS_START ? `<button class="btn ghost" data-news-all="1">Alle ${nl.length} Neuigkeiten anzeigen</button>` : ""}
     </div></section>`;
 }
 
@@ -405,7 +407,7 @@ function viewMehr() {
       ? `<a class="li" href="#mehr/red"><span>News, Ankündigungen & Stadionzeitung<small>Bearbeiten · du bist angemeldet</small></span><span class="chev" aria-hidden="true">›</span></a>`
       : `<a class="li" href="#mehr/red-login"><span>Anmelden<small>Nur für die Redaktion</small></span><span class="chev" aria-hidden="true">›</span></a>`}</div></section>
     <section class="sec"><h2 class="h">Rechtliches</h2><div class="card list">${L("Impressum", "/impressum/")}${L("Datenschutz", "/datenschutz/")}</div></section>
-    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.14</div>`;
+    <div class="foot"><b>Rot-Weiß ein Leben lang!</b>SpVgg Pfreimd · Abteilung Fußball · Version 1.15</div>`;
 }
 
 /* ---------- Detailseiten ---------- */
@@ -445,13 +447,14 @@ function openEvent(i) {
     ${txt.map(x => `<p class="pre">${linkify(x)}</p>`).join("")}
     ${isEditor() ? `<div><a class="btn ghost" href="#news/red-ank-${i}">Diese Ankündigung bearbeiten</a></div>` : ""}`);
 }
-function openNews(i) {
-  const n = S.news[i];
-  if (n.entwurf && !isEditor()) return closeSheet();
+function openNews(k) {
+  const n = newsByKey(k);
+  if (!n || (n.entwurf && !isEditor())) return closeSheet();
   openSheet(`<span class="date">${esc(n.d)}${n.entwurf ? ` · <b class="draft">Entwurf</b>` : ""}</span><h2 id="sheet-title">${esc(n.t)}</h2>
     ${n.img ? `<img class="hero" src="${esc(abs(n.img))}" alt="" data-wait onload="__imgOk(this)" onerror="__imgErr(this)">` : ""}
-    ${n.p.map(p => `<p class="pre">${linkify(p)}</p>`).join("")}
-    ${isEditor() ? `<div><a class="btn ghost" href="#news/red-news-${i}">Diese News bearbeiten</a></div>` : ""}`);
+    ${n.hp ? `<div class="hpn">${n.html}</div>` : n.p.map(p => `<p class="pre">${linkify(p)}</p>`).join("")}
+    ${n.hp ? `<div><a class="btn ghost" href="${SITE}/${NEWS_SEITE.slug}/" target="_blank" rel="noopener">Auf der Homepage ansehen ↗</a></div>`
+      : isEditor() ? `<div><a class="btn ghost" href="#news/red-news-${n.k}">Diese News bearbeiten</a></div>` : ""}`);
 }
 
 /* ---------- Navigation ----------
@@ -512,7 +515,7 @@ function applyRoute() {
     openSheet(redSheet(detail));
   }
   else if (detail !== null && /^ank-\d+$/.test(detail) && S.events[+detail.slice(4)]) openEvent(+detail.slice(4));
-  else if (detail !== null && view === "news" && S.news[+detail]) openNews(+detail);
+  else if (detail !== null && view === "news" && newsByKey(detail)) openNews(detail);
   else if (detail !== null && view === "teams" && youth(detail)) openSheet(youthSheet(detail));
   else if (detail !== null && SHEETS[detail]) openSheet(SHEETS[detail]());
   else closeSheet();
@@ -553,13 +556,14 @@ document.addEventListener("click", e => {
   }
   const rb = e.target.closest("[data-red]");
   if (rb) { redAction(rb); return; }
-  const b = e.target.closest("[data-team],[data-mode],[data-cat],[data-group],[data-news],[data-sheet],[data-go-team],[data-copy]");
+  const b = e.target.closest("[data-team],[data-mode],[data-cat],[data-group],[data-news],[data-news-all],[data-sheet],[data-go-team],[data-copy]");
   if (!b) return;
   const d = b.dataset;
   if (d.team) { state.team = d.team; render(); }
   else if (d.mode) { state.spMode = d.mode; render(); }
   else if (d.cat) { state.cat = d.cat; render(); }
   else if (d.group) { state.group = d.group; render(); }
+  else if (d.newsAll) { state.newsAll = true; render(); }
   else if (d.news) go("news/" + d.news);
   else if (d.sheet) go(current() + "/" + d.sheet);
   else if (d.goTeam) {
@@ -708,7 +712,7 @@ function redHome() {
   return `<h2 id="sheet-title">Redaktion</h2>
     <p class="muted">Änderungen sind nach etwa ein bis zwei Minuten für alle sichtbar. Jede Änderung wird als eigene Version gespeichert.</p>
     <section class="sec"><h3 class="h">News <a href="#${base}/red-news-neu">+ Neue News</a></h3>
-      <div class="card list">${S.news.map((n, i) => L(`red-news-${i}`, n.t, n.d + (n.entwurf ? " · Entwurf" : ""))).join("") || `<p class="li muted">Noch keine News.</p>`}</div></section>
+      <div class="card list">${S.news.map((n, i) => L(`red-news-${i}`, n.t, n.d + (n.entwurf ? " · Entwurf" : "") + (aufHomepage(n) ? " · steht auch auf der Homepage, dort gilt die Fassung" : ""))).join("") || `<p class="li muted">Noch keine News.</p>`}</div></section>
     <section class="sec"><h3 class="h">Ankündigungen <a href="#${base}/red-ank-neu">+ Neue Ankündigung</a></h3>
       <div class="card list">${S.events.map((e, i) => L(`red-ank-${i}`, e.t, isoToDe(e.d) + (e.img ? " · mit Bild" : "") + (toDate(e.d) < today() ? " · vorbei" : ""))).join("") || `<p class="li muted">Noch keine Ankündigungen.</p>`}</div></section>
     <section class="sec"><h3 class="h">Stadionzeitung <a href="#${base}/red-zeitung-neu">+ Neue Ausgabe</a></h3>
@@ -948,7 +952,7 @@ async function refreshAll() {
   refreshing = true; lastLoad = Date.now();
   const { detail } = route();
   const editing = !document.getElementById("sheet").hidden && detail && detail.startsWith("red");
-  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), loadZeitung(), loadPhotos(), editing ? null : reloadContent()]);
+  await Promise.allSettled([loadLive(), loadYouth(), loadShop(), loadZeitung(), loadPhotos(), loadHpNews(), editing ? null : reloadContent()]);
   refreshing = false;
 }
 document.addEventListener("visibilitychange", () => {
@@ -1015,6 +1019,87 @@ async function loadZeitung() {
     if (["news", "mehr"].includes(current())) render();
     const { detail } = route(), sh = document.getElementById("sheet");
     if (detail === "zeitung" && !sh.hidden) { const y = sh.scrollTop; document.getElementById("sheet-body").innerHTML = SHEETS.zeitung(); sh.scrollTop = y; }
+  }
+}
+
+/* ---------- Neuigkeiten live von der Homepage-Seite „News“ (WordPress-Seite 519) ----------
+   Jeder Eintrag der aufklappbaren Liste wird zu einer News: Überschrift „19. November 2026: Titel“
+   → Datum und Titel, erstes Bild → Titelbild, der Rest bereinigt als Text (Zwischentitel, Links,
+   weitere Bilder; ein YouTube-Video wird zum Link). News aus der App-Redaktion kommen dazu;
+   steht dieselbe Überschrift auch auf der Homepage, gilt die Fassung der Homepage. */
+const NEWS_SEITE = { id: 519, slug: "news-2" }, NEWS_START = 6;
+const MONATS_KEYS = ["januar", "februar", "maerz", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "dezember"];
+const titelKey = t => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "");
+function newsDateKey(d) {
+  const y = /(\d{4})/.exec(d)?.[1];
+  if (!y) return "";
+  const mo = MONATS_KEYS.findIndex(m => titelKey(d).includes(m));
+  const day = /^\s*(\d{1,2})\./.exec(d)?.[1] || "0";
+  return `${y}-${two(mo + 1)}-${two(day)}`;
+}
+function parseHpNews(raw) {
+  const doc = new DOMParser().parseFromString(raw, "text/html");
+  doc.querySelectorAll("style,script,noscript,form,svg,input,button:not(.kt-blocks-accordion-header),select,textarea").forEach(x => x.remove());
+  const out = [], used = {};
+  for (const pane of doc.querySelectorAll(".wp-block-kadence-pane")) {
+    const head = (pane.querySelector(".kt-blocks-accordion-title") || pane.querySelector(".kt-blocks-accordion-header"))?.textContent.replace(/\s+/g, " ").trim();
+    const inner = pane.querySelector(".kt-accordion-panel-inner");
+    if (!head || !inner) continue;
+    const m = /^([^:]*\d{4})\s*:\s*(.+)$/.exec(head);
+    const d = m ? m[1].trim() : "", t = m ? m[2].trim() : head;
+    /* Eingebettete Videos und Seiten werden zu Links */
+    inner.querySelectorAll("iframe").forEach(f => {
+      const src = f.getAttribute("src") || "", yt = /youtube(?:-nocookie)?\.com\/embed\/([\w-]+)/.exec(src);
+      const href = yt ? `https://www.youtube.com/watch?v=${yt[1]}` : src;
+      const p = doc.createElement("p");
+      if (/^https:\/\//.test(href)) { const a = doc.createElement("a"); a.href = href; a.textContent = (yt ? "Video ansehen" : "Inhalt ansehen") + (f.title ? `: ${f.title}` : "") + " ↗"; p.append(a); }
+      const fig = f.closest("figure");
+      if (fig) fig.replaceWith(p); else f.replaceWith(p);
+    });
+    const first = [...inner.querySelectorAll("img")].find(i => /^https:\/\//.test(i.getAttribute("src") || ""));
+    const img = first ? first.getAttribute("src").replace(SITE, "") : "";
+    if (first) { const holder = first.closest("p,figure"); first.remove(); if (holder && !holder.textContent.trim() && !holder.querySelector("img")) holder.remove(); }
+    const teaser = [...inner.querySelectorAll("p")].map(p => p.textContent.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim()).find(x => x.length > 20) || "";
+    let k = "h-" + slug(t);
+    used[k] = (used[k] || 0) + 1; if (used[k] > 1) k += "-" + used[k];
+    out.push({ k, d, t, img, p: [teaser.slice(0, 240)], html: cleanNode(inner), hp: true });
+  }
+  return out;
+}
+const hpTitel = () => new Set((state.hpNews || []).map(n => titelKey(n.t)));
+const aufHomepage = n => !n.entwurf && hpTitel().has(titelKey(n.t));
+function newsList() {
+  const app = S.news.map((n, i) => ({ ...n, k: String(i) }));
+  const hp = state.hpNews;
+  if (!hp || !hp.length) return app;
+  const titel = hpTitel();
+  const list = hp.map(n => ({ ...n }));
+  let last = "9999";
+  for (const n of list) { n.key = newsDateKey(n.d) || last; last = n.key; }
+  for (const n of app.filter(n => n.entwurf || !titel.has(titelKey(n.t)))) {
+    const key = newsDateKey(n.d) || "";
+    const at = n.entwurf ? 0 : list.findIndex(x => x.key < key);
+    list.splice(at < 0 ? list.length : at, 0, { ...n, key });
+  }
+  return list;
+}
+const newsByKey = k => newsList().find(n => n.k === String(k));
+async function loadHpNews() {
+  if (!state.hpNews) { try { state.hpNews = JSON.parse(localStorage.getItem("spvgg-news") || "null"); } catch (e) {} }
+  const before = JSON.stringify(state.hpNews);
+  try {
+    const j = await getJSON(`${SITE}/wp-json/wp/v2/pages/${NEWS_SEITE.id}?_fields=content`, 12000);
+    const list = parseHpNews(j.content.rendered);
+    if (list.length) {
+      state.hpNews = list;
+      try { localStorage.setItem("spvgg-news", JSON.stringify(list)); } catch (e) {}
+    }
+  } catch (e) { /* letzter Stand bleibt */ }
+  if (JSON.stringify(state.hpNews) !== before) {
+    if (panes.news) panes.news.dirty = true;
+    if (current() === "news") render();
+    const { view, detail } = route(), sh = document.getElementById("sheet");
+    if (view === "news" && detail && !sh.hidden && newsByKey(detail)) { const y = sh.scrollTop; openNews(detail); sh.scrollTop = y; }
   }
 }
 
@@ -1139,6 +1224,7 @@ async function start() {
   const [, m, d] = S.stand.split("-");
   document.getElementById("src").textContent = `Stand ${d}.${m}.`;
   try { state.zLive = JSON.parse(localStorage.getItem("spvgg-zeitung") || "null"); } catch (e) {}
+  try { state.hpNews = JSON.parse(localStorage.getItem("spvgg-news") || "null"); } catch (e) {}
   applyRoute();
   lastLoad = Date.now();
   loadLive();
@@ -1146,6 +1232,7 @@ async function start() {
   loadYouth();
   loadPhotos();
   loadZeitung();
+  loadHpNews();
 }
 start();
 
